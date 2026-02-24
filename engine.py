@@ -37,7 +37,7 @@ def analyze_resume(resume_text, job_description):
     return response.text
 
 if __name__ == "__main__":
-    resume_filename = "RESUME.pdf" 
+    resume_filename = "resume.pdf.pdf" 
     test_jd = "Looking for a MERN Stack Developer with experience in Python and React."
 
     try:
