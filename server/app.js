@@ -3,32 +3,40 @@ const multer = require('multer');
 const { spawn } = require('child_process');
 const cors = require('cors');
 const path = require('path');
-
 const app = express();
-app.use(cors());
 
-// Configure where uploaded resumes will be temporarily stored
+app.use(cors());
+app.use(express.json());
+
+// Temporary upload storage
 const upload = multer({ dest: 'uploads/' });
 
 app.post('/api/analyze', upload.single('resume'), (req, res) => {
+    if (!req.file) return res.status(400).send("No file uploaded.");
+    
     const resumePath = req.file.path;
-    const jobDescription = req.body.jd || "MERN Stack Developer";
+    const jd = req.body.jd;
 
-    console.log(`Starting AI Analysis for: ${req.file.originalname}`);
+    console.log(`🚀 Analyzing: ${req.file.originalname}`);
 
-    // Trigger your Python Engine
-    // This command runs: python ../engine.py [path_to_file] [job_description]
-    const python = const python = spawn('python', ['../engine.py', resumePath, jd]);
-    let resultData = '';
+    // Call Python Engine (Gemini 3.1 Pro)
+    // Adjust path if engine.py is in the parent directory
+    const python = spawn('python', [path.join(__dirname, '../engine.py'), resumePath, jd]);
+
+    let output = '';
     python.stdout.on('data', (data) => {
-        resultData += data.toString();
+        output += data.toString();
+    });
+
+    python.stderr.on('data', (data) => {
+        console.error(`Python Error: ${data}`);
     });
 
     python.on('close', (code) => {
-        console.log("Analysis Complete.");
-        res.json({ analysis: resultData });
+        console.log("✅ Analysis complete.");
+        res.json({ analysis: output });
     });
 });
 
 const PORT = 5000;
-app.listen(PORT, () => console.log(`🚀 Node.js Bridge running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`📡 Bridge running on http://localhost:${PORT}`));
