@@ -18,8 +18,7 @@ app.post('/api/analyze', upload.single('resume'), (req, res) => {
 
     // Trigger your Python Engine
     // This command runs: python ../engine.py [path_to_file] [job_description]
-    const python = spawn('python', ['../engine.py', resumePath, jobDescription]);
-
+    const python = const python = spawn('python', ['../engine.py', resumePath, jd]);
     let resultData = '';
     python.stdout.on('data', (data) => {
         resultData += data.toString();

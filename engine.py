@@ -1,21 +1,25 @@
 import os
+import sys  # Handles inputs from the Node.js bridge
 import fitz  # PyMuPDF
 from dotenv import load_dotenv
 from google import genai
 
-# 1. Load your hidden API key from the .env file
+# 1. Load hidden API key from .env
 load_dotenv()
-API_KEY = os.getenv("AIzaSyDqVF8FKSl1hQpots646jS2Pc0nHHjsB0I")
+API_KEY = os.getenv("GEMINI_API_KEY")
 
-# 2. Setup the modern 2026 Client
+# 2. Setup the Gemini 3.1 Pro Client
 client = genai.Client(api_key=API_KEY)
 
 def extract_text_from_pdf(pdf_path):
-    doc = fitz.open(pdf_path)
-    text = ""
-    for page in doc:
-        text += page.get_text()
-    return text
+    try:
+        doc = fitz.open(pdf_path)
+        text = ""
+        for page in doc:
+            text += page.get_text()
+        return text
+    except Exception as e:
+        return f"Error reading PDF: {e}"
 
 def analyze_resume(resume_text, job_description):
     prompt = f"""
@@ -29,7 +33,7 @@ def analyze_resume(resume_text, job_description):
     Job Description: {job_description}
     """
     
-    # Using the current flagship 2026 model
+    # Use the current 2026 flagship model
     response = client.models.generate_content(
         model="gemini-3.1-pro", 
         contents=prompt
@@ -37,20 +41,22 @@ def analyze_resume(resume_text, job_description):
     return response.text
 
 if __name__ == "__main__":
-    resume_filename = "resume.pdf.pdf" 
-    test_jd = "Looking for a MERN Stack Developer with experience in Python and React."
+    # --- DYNAMIC INPUT HANDLING ---
+    # sys.argv[1] will be the filename sent by your Node.js server
+    resume_filename = sys.argv[1] if len(sys.argv) > 1 else "resume.pdf.pdf"
+    
+    # sys.argv[2] will be the job description sent by the user on your website
+    test_jd = sys.argv[2] if len(sys.argv) > 2 else "MERN Stack Developer with Python experience"
 
     try:
-        print(f"Reading {resume_filename}...")
+        # Step 1: Extract
         text = extract_text_from_pdf(resume_filename)
         
-        print("Analyzing with Gemini 3.1 Pro...")
+        # Step 2: Analyze
+        # We only print the result so Node.js can capture it as a clean string
         result = analyze_resume(text, test_jd)
-        
-        print("\n" + "="*40)
-        print("CAREERORBIT AI: RECRUITER REPORT")
-        print("="*40)
         print(result)
         
     except Exception as e:
+        # Print error so it shows up in your Node.js logs
         print(f"Error: {e}")
