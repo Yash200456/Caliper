@@ -8,7 +8,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Temporary upload storage
 const upload = multer({ dest: 'uploads/' });
 
 app.post('/api/analyze', upload.single('resume'), (req, res) => {
@@ -19,9 +18,8 @@ app.post('/api/analyze', upload.single('resume'), (req, res) => {
 
     console.log(`🚀 Analyzing: ${req.file.originalname}`);
 
-    // Call Python Engine (Gemini 3.1 Pro)
-    // Adjust path if engine.py is in the parent directory
-    const python = spawn('python', [path.join(__dirname, '../engine.py'), resumePath, jd]);
+    // Call Python Engine
+    const python = spawn('python', [path.join(__dirname, '../engine.py'), resumePath, jd, 'analyze']);
 
     let output = '';
     python.stdout.on('data', (data) => {
@@ -33,7 +31,8 @@ app.post('/api/analyze', upload.single('resume'), (req, res) => {
     });
 
     python.on('close', (code) => {
-        console.log("✅ Analysis complete.");
+        console.log("✅ Analysis complete. Sending to React.");
+        // CRITICAL FIX: The key 'analysis' must match what React is expecting
         res.json({ analysis: output });
     });
 });
