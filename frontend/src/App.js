@@ -11,7 +11,8 @@ const App = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  
+  // Notice we removed the "Name" field from signup because Jobscan doesn't ask for it initially!
 
   const handleUpload = async () => {
     if (!file || !jd) return alert("Please provide both a Resume and a Job Description!");
@@ -33,7 +34,7 @@ const App = () => {
 
   const handleAuth = (e) => {
     e.preventDefault();
-    alert(`This is where we will connect to your Node/MongoDB backend later!\nSimulating ${currentView} for: ${email}`);
+    alert(`Simulating ${currentView} for: ${email}`);
     setCurrentView('dashboard'); 
   };
 
@@ -42,7 +43,6 @@ const App = () => {
       
       {/* --- The Navbar --- */}
       <nav style={styles.navbar}>
-        {/* FIXED: Only one style property here now! */}
         <div onClick={() => setCurrentView('dashboard')} style={{cursor: 'pointer', ...styles.navLeft}}>
           <h1 style={styles.logo}>
             CareerOrbit <span style={styles.logoHighlight}>AI</span>
@@ -110,50 +110,79 @@ const App = () => {
         </div>
       )}
 
-      {/* 2. THE LOGIN VIEW */}
+      {/* 2. THE LOGIN VIEW (Matched to Jobscan reference) */}
       {currentView === 'login' && (
         <div style={styles.authWrapper}>
+          {/* Logo outside the card */}
+          <div style={styles.authLogoContainer}>
+            <h1 style={styles.logo}>CareerOrbit <span style={styles.logoHighlight}>AI</span></h1>
+          </div>
+          
           <div style={styles.authCard}>
-            <h2 style={styles.authTitle}>Welcome Back</h2>
-            <p style={styles.authSubtitle}>Log in to access your AI reports</p>
+            <h2 style={styles.authTitle}>Welcome back.</h2>
             
+            {/* Social Buttons */}
+            <div style={styles.socialGroup}>
+              <button style={styles.socialBtn}><span style={{color:'#0077b5', marginRight:'8px', fontWeight:'900'}}>in</span> LinkedIn</button>
+              <button style={styles.socialBtn}><span style={{color:'#db4437', marginRight:'8px', fontWeight:'900'}}>G</span> Google</button>
+              <button style={styles.socialBtn}><span style={{color:'#1877f2', marginRight:'8px', fontWeight:'900'}}>f</span> Facebook</button>
+            </div>
+
             <form onSubmit={handleAuth} style={styles.authForm}>
-              <div style={styles.inputGroup}>
-                <label style={styles.label}>Email Address</label>
-                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} style={styles.authInput} placeholder="name@university.edu" />
+              <div style={styles.authInputGroup}>
+                <label style={styles.authLabel}>Email *</label>
+                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} style={styles.authInput} />
               </div>
-              <div style={styles.inputGroup}>
-                <label style={styles.label}>Password</label>
-                <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} style={styles.authInput} placeholder="••••••••" />
+              <div style={styles.authInputGroup}>
+                <label style={styles.authLabel}>Password *</label>
+                <div style={{position: 'relative'}}>
+                  <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} style={{...styles.authInput, paddingRight: '40px'}} />
+                  <span style={styles.eyeIcon}>👁️</span>
+                </div>
               </div>
-              <button type="submit" style={styles.btnPrimary}>Log In</button>
+              
+              <div style={styles.forgotPasswordContainer}>
+                <span style={styles.link}>Forgot password?</span>
+              </div>
+
+              <button type="submit" style={styles.authSubmitBtn}>Log in</button>
             </form>
             <p style={styles.authFooter}>Don't have an account? <span style={styles.link} onClick={() => setCurrentView('signup')}>Sign up</span></p>
           </div>
         </div>
       )}
 
-      {/* 3. THE SIGNUP VIEW */}
+      {/* 3. THE SIGNUP VIEW (Matched to Jobscan reference) */}
       {currentView === 'signup' && (
         <div style={styles.authWrapper}>
+          <div style={styles.authLogoContainer}>
+            <h1 style={styles.logo}>CareerOrbit <span style={styles.logoHighlight}>AI</span></h1>
+          </div>
+          
           <div style={styles.authCard}>
-            <h2 style={styles.authTitle}>Create an Account</h2>
-            <p style={styles.authSubtitle}>Start optimizing your resume with AI</p>
+            <h2 style={styles.authTitle}>Sign up for CareerOrbit</h2>
+            
+            <div style={styles.socialGroup}>
+              <button style={styles.socialBtn}><span style={{color:'#0077b5', marginRight:'8px', fontWeight:'900'}}>in</span> LinkedIn</button>
+              <button style={styles.socialBtn}><span style={{color:'#db4437', marginRight:'8px', fontWeight:'900'}}>G</span> Google</button>
+              <button style={styles.socialBtn}><span style={{color:'#1877f2', marginRight:'8px', fontWeight:'900'}}>f</span> Facebook</button>
+            </div>
             
             <form onSubmit={handleAuth} style={styles.authForm}>
-              <div style={styles.inputGroup}>
-                <label style={styles.label}>Full Name</label>
-                <input type="text" required value={name} onChange={(e) => setName(e.target.value)} style={styles.authInput} placeholder="Yashwanth Gowda" />
+              <div style={styles.authInputGroup}>
+                <label style={styles.authLabel}>Email *</label>
+                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} style={styles.authInput} />
               </div>
-              <div style={styles.inputGroup}>
-                <label style={styles.label}>Email Address</label>
-                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} style={styles.authInput} placeholder="name@university.edu" />
+              <div style={styles.authInputGroup}>
+                <label style={styles.authLabel}>Password *</label>
+                <div style={{position: 'relative'}}>
+                  <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} style={{...styles.authInput, paddingRight: '40px'}} />
+                  <span style={styles.eyeIcon}>👁️</span>
+                </div>
+                <p style={styles.helperText}>8 or more characters</p>
               </div>
-              <div style={styles.inputGroup}>
-                <label style={styles.label}>Password</label>
-                <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} style={styles.authInput} placeholder="Create a strong password" />
-              </div>
-              <button type="submit" style={styles.btnPrimary}>Create Account</button>
+              
+              <button type="submit" style={styles.authSubmitBtn}>Create account</button>
             </form>
             <p style={styles.authFooter}>Already have an account? <span style={styles.link} onClick={() => setCurrentView('login')}>Log in</span></p>
           </div>
@@ -202,14 +231,27 @@ const styles = {
   emptyStateText: { fontSize: '20px', color: '#0f172a', margin: '0 0 10px 0' },
   emptyStateSubtext: { color: '#475569', textAlign: 'center', maxWidth: '300px' },
 
-  authWrapper: { display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '40px' },
-  authCard: { width: '100%', maxWidth: '450px', background: 'linear-gradient(145deg, rgba(248, 250, 252, 0.95) 0%, rgba(226, 232, 240, 0.95) 100%)', backdropFilter: 'blur(16px)', borderRadius: '24px', border: '1px solid rgba(203, 213, 225, 0.8)', padding: '50px 40px', boxShadow: '0 25px 50px -12px rgba(15, 23, 42, 0.1)' },
-  authTitle: { margin: '0 0 10px 0', fontSize: '28px', fontWeight: '800', textAlign: 'center', color: '#0f172a' },
-  authSubtitle: { margin: '0 0 30px 0', fontSize: '15px', color: '#475569', textAlign: 'center' },
-  authForm: { display: 'flex', flexDirection: 'column', gap: '5px' },
-  authInput: { width: '100%', padding: '16px', borderRadius: '12px', border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: '15px', outline: 'none', boxSizing: 'border-box', transition: 'border 0.2s', marginBottom: '10px' },
-  authFooter: { marginTop: '25px', textAlign: 'center', fontSize: '14px', color: '#475569' },
-  link: { color: '#0284c7', fontWeight: '700', cursor: 'pointer' }
+  /* --- JOBSCAN-STYLE AUTHENTICATION STYLES --- */
+  authWrapper: { display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '40px' },
+  authLogoContainer: { marginBottom: '30px' },
+  authCard: { width: '100%', maxWidth: '450px', background: '#ffffff', borderRadius: '8px', border: '1px solid #e2e8f0', padding: '40px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.05)' },
+  authTitle: { margin: '0 0 30px 0', fontSize: '24px', fontWeight: '600', textAlign: 'center', color: '#1e293b' },
+  
+  socialGroup: { display: 'flex', gap: '10px', marginBottom: '30px' },
+  socialBtn: { flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', padding: '10px', fontSize: '14px', fontWeight: '500', color: '#475569', cursor: 'pointer', transition: 'background 0.2s' },
+  
+  authForm: { display: 'flex', flexDirection: 'column' },
+  authInputGroup: { marginBottom: '20px' },
+  authLabel: { display: 'block', marginBottom: '8px', fontSize: '14px', color: '#334155' },
+  authInput: { width: '100%', padding: '12px 14px', borderRadius: '4px', border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: '15px', outline: 'none', boxSizing: 'border-box' },
+  eyeIcon: { position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', opacity: 0.5 },
+  helperText: { margin: '6px 0 0 0', fontSize: '12px', color: '#64748b' },
+  
+  forgotPasswordContainer: { textAlign: 'left', marginBottom: '20px' },
+  authSubmitBtn: { width: '100%', padding: '14px', background: '#0062cc', color: 'white', border: 'none', borderRadius: '4px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', transition: 'background 0.2s' },
+  
+  authFooter: { marginTop: '30px', textAlign: 'center', fontSize: '14px', color: '#475569' },
+  link: { color: '#0062cc', fontWeight: '700', cursor: 'pointer' }
 };
 
 export default App;
