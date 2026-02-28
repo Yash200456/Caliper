@@ -11,8 +11,6 @@ const App = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
-  // Notice we removed the "Name" field from signup because Jobscan doesn't ask for it initially!
 
   const handleUpload = async () => {
     if (!file || !jd) return alert("Please provide both a Resume and a Job Description!");
@@ -110,23 +108,15 @@ const App = () => {
         </div>
       )}
 
-      {/* 2. THE LOGIN VIEW (Matched to Jobscan reference) */}
+      {/* 2. THE LOGIN VIEW */}
       {currentView === 'login' && (
         <div style={styles.authWrapper}>
-          {/* Logo outside the card */}
           <div style={styles.authLogoContainer}>
             <h1 style={styles.logo}>CareerOrbit <span style={styles.logoHighlight}>AI</span></h1>
           </div>
           
           <div style={styles.authCard}>
             <h2 style={styles.authTitle}>Welcome back.</h2>
-            
-            {/* Social Buttons */}
-            <div style={styles.socialGroup}>
-              <button style={styles.socialBtn}><span style={{color:'#0077b5', marginRight:'8px', fontWeight:'900'}}>in</span> LinkedIn</button>
-              <button style={styles.socialBtn}><span style={{color:'#db4437', marginRight:'8px', fontWeight:'900'}}>G</span> Google</button>
-              <button style={styles.socialBtn}><span style={{color:'#1877f2', marginRight:'8px', fontWeight:'900'}}>f</span> Facebook</button>
-            </div>
 
             <form onSubmit={handleAuth} style={styles.authForm}>
               <div style={styles.authInputGroup}>
@@ -152,7 +142,7 @@ const App = () => {
         </div>
       )}
 
-      {/* 3. THE SIGNUP VIEW (Matched to Jobscan reference) */}
+      {/* 3. THE SIGNUP VIEW */}
       {currentView === 'signup' && (
         <div style={styles.authWrapper}>
           <div style={styles.authLogoContainer}>
@@ -161,12 +151,6 @@ const App = () => {
           
           <div style={styles.authCard}>
             <h2 style={styles.authTitle}>Sign up for CareerOrbit</h2>
-            
-            <div style={styles.socialGroup}>
-              <button style={styles.socialBtn}><span style={{color:'#0077b5', marginRight:'8px', fontWeight:'900'}}>in</span> LinkedIn</button>
-              <button style={styles.socialBtn}><span style={{color:'#db4437', marginRight:'8px', fontWeight:'900'}}>G</span> Google</button>
-              <button style={styles.socialBtn}><span style={{color:'#1877f2', marginRight:'8px', fontWeight:'900'}}>f</span> Facebook</button>
-            </div>
             
             <form onSubmit={handleAuth} style={styles.authForm}>
               <div style={styles.authInputGroup}>
@@ -189,6 +173,18 @@ const App = () => {
         </div>
       )}
 
+      {/* --- THE GLOBAL FOOTER --- */}
+      <footer style={styles.footer}>
+        <div style={styles.footerText}>
+          © 2026 CareerOrbit AI. Built by Yashwanth Gowda.
+        </div>
+        <div style={styles.footerLinks}>
+          <span style={styles.footerLink}>Privacy Policy</span>
+          <span style={styles.footerLink}>Terms of Service</span>
+          <span style={styles.footerLink}>Contact</span>
+        </div>
+      </footer>
+
     </div>
   );
 };
@@ -207,7 +203,7 @@ const styles = {
   logoHighlight: { color: '#0284c7' },
   badge: { background: 'rgba(2, 132, 199, 0.1)', color: '#0284c7', padding: '6px 14px', borderRadius: '20px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(2, 132, 199, 0.2)' },
   
-  dashboard: { display: 'flex', flexDirection: 'row', gap: '30px', padding: '40px 50px', flex: 1, height: '100%' },
+  dashboard: { display: 'flex', flexDirection: 'row', gap: '30px', padding: '40px 50px', flex: 1 },
   glassCard: { flex: 1, background: 'linear-gradient(145deg, rgba(248, 250, 252, 0.85) 0%, rgba(226, 232, 240, 0.85) 100%)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderRadius: '24px', border: '1px solid rgba(203, 213, 225, 0.6)', padding: '40px', boxShadow: '0 25px 50px -12px rgba(15, 23, 42, 0.08)', display: 'flex', flexDirection: 'column' },
   
   cardHeader: { marginBottom: '30px' },
@@ -237,9 +233,6 @@ const styles = {
   authCard: { width: '100%', maxWidth: '450px', background: '#ffffff', borderRadius: '8px', border: '1px solid #e2e8f0', padding: '40px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.05)' },
   authTitle: { margin: '0 0 30px 0', fontSize: '24px', fontWeight: '600', textAlign: 'center', color: '#1e293b' },
   
-  socialGroup: { display: 'flex', gap: '10px', marginBottom: '30px' },
-  socialBtn: { flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', padding: '10px', fontSize: '14px', fontWeight: '500', color: '#475569', cursor: 'pointer', transition: 'background 0.2s' },
-  
   authForm: { display: 'flex', flexDirection: 'column' },
   authInputGroup: { marginBottom: '20px' },
   authLabel: { display: 'block', marginBottom: '8px', fontSize: '14px', color: '#334155' },
@@ -251,7 +244,13 @@ const styles = {
   authSubmitBtn: { width: '100%', padding: '14px', background: '#0062cc', color: 'white', border: 'none', borderRadius: '4px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', transition: 'background 0.2s' },
   
   authFooter: { marginTop: '30px', textAlign: 'center', fontSize: '14px', color: '#475569' },
-  link: { color: '#0062cc', fontWeight: '700', cursor: 'pointer' }
+  link: { color: '#0062cc', fontWeight: '700', cursor: 'pointer' },
+
+  /* --- FOOTER STYLES --- */
+  footer: { marginTop: 'auto', padding: '24px 50px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(0, 0, 0, 0.05)', fontSize: '14px', color: '#64748b' },
+  footerText: { fontWeight: '500' },
+  footerLinks: { display: 'flex', gap: '24px' },
+  footerLink: { cursor: 'pointer', fontWeight: '500', transition: 'color 0.2s' }
 };
 
 export default App;
