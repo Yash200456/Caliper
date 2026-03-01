@@ -59,32 +59,59 @@ const App = () => {
       {/* 1. THE DASHBOARD VIEW */}
       {currentView === 'dashboard' && (
         <div style={styles.dashboard}>
+          
+          {/* PHASE 2: LEFT COLUMN 3-STEP PROCESS */}
           <div style={styles.glassCard}>
             <div style={styles.cardHeader}>
               <h2 style={styles.cardTitle}>Candidate Setup</h2>
-              <p style={styles.cardSubtitle}>Upload credentials & target role</p>
+              <p style={styles.cardSubtitle}>Complete the steps below to initialize AI analysis.</p>
             </div>
 
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>📄 Upload Resume (PDF)</label>
-              <div style={styles.fileDropZone}>
-                <input type="file" accept=".pdf" onChange={(e) => setFile(e.target.files[0])} style={styles.fileInput} />
+            {/* Step 1 */}
+            <div style={styles.stepContainer}>
+              <div style={styles.stepHeader}>
+                <div style={styles.stepNumber}>1</div>
+                <h3 style={styles.stepTitle}>Upload Credentials</h3>
+              </div>
+              <div style={styles.stepContent}>
+                <label style={styles.label}>📄 Resume Document (PDF)</label>
+                <div style={styles.fileDropZone}>
+                  <input type="file" accept=".pdf" onChange={(e) => setFile(e.target.files[0])} style={styles.fileInput} />
+                </div>
               </div>
             </div>
 
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>🎯 Target Job Description</label>
-              <textarea 
-                placeholder="Paste the technical requirements, skills, and role details here..." 
-                value={jd} onChange={(e) => setJd(e.target.value)} style={styles.textarea}
-              />
+            {/* Step 2 */}
+            <div style={styles.stepContainer}>
+              <div style={styles.stepHeader}>
+                <div style={styles.stepNumber}>2</div>
+                <h3 style={styles.stepTitle}>Define Target Role</h3>
+              </div>
+              <div style={styles.stepContent}>
+                <label style={styles.label}>🎯 Job Description</label>
+                <textarea 
+                  placeholder="Paste the technical requirements, skills, and role details here..." 
+                  value={jd} onChange={(e) => setJd(e.target.value)} style={styles.textarea}
+                />
+              </div>
             </div>
 
-            <button onClick={handleUpload} disabled={loading} style={loading ? styles.btnDisabled : styles.btnPrimary}>
-              {loading ? "✨ AI is Analyzing..." : "🚀 Generate Intelligence Report"}
-            </button>
+            {/* Step 3 */}
+            <div style={{...styles.stepContainer, borderBottom: 'none', paddingBottom: 0, marginBottom: 0}}>
+              <div style={styles.stepHeader}>
+                <div style={styles.stepNumber}>3</div>
+                <h3 style={styles.stepTitle}>Initialize AI</h3>
+              </div>
+              <div style={styles.stepContent}>
+                <button onClick={handleUpload} disabled={loading} style={loading ? styles.btnDisabled : styles.btnPrimary}>
+                  {loading ? "✨ AI is Analyzing..." : "🚀 Generate Intelligence Report"}
+                </button>
+              </div>
+            </div>
+
           </div>
 
+          {/* RIGHT COLUMN: Output */}
           <div style={styles.glassCard}>
             {result ? (
               <>
@@ -209,12 +236,19 @@ const styles = {
   cardHeader: { marginBottom: '30px' },
   cardTitle: { margin: 0, fontSize: '24px', fontWeight: '700', color: '#0f172a' },
   cardSubtitle: { margin: '8px 0 0 0', fontSize: '14px', color: '#475569' },
-  inputGroup: { marginBottom: '25px' },
-  label: { display: 'block', marginBottom: '10px', fontSize: '14px', fontWeight: '600', color: '#334155' },
   
+  /* --- PHASE 2: NEW 3-STEP STYLES --- */
+  stepContainer: { marginBottom: '25px', paddingBottom: '25px', borderBottom: '1px solid rgba(0,0,0,0.05)' },
+  stepHeader: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '15px' },
+  stepNumber: { background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)', color: 'white', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '15px', fontWeight: 'bold', boxShadow: '0 4px 10px rgba(2, 132, 199, 0.3)' },
+  stepTitle: { margin: 0, fontSize: '18px', fontWeight: '700', color: '#1e293b' },
+  stepContent: { paddingLeft: '44px' }, // Indents the inputs to perfectly align with the text, not the circle
+  /* ---------------------------------- */
+
+  label: { display: 'block', marginBottom: '10px', fontSize: '14px', fontWeight: '600', color: '#334155' },
   fileDropZone: { border: '2px dashed rgba(148, 163, 184, 0.5)', borderRadius: '16px', padding: '20px', background: 'rgba(241, 245, 249, 0.5)', transition: 'border 0.3s ease' },
   fileInput: { width: '100%', color: '#0f172a' },
-  textarea: { width: '100%', height: '220px', padding: '20px', borderRadius: '16px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', fontSize: '15px', lineHeight: '1.5', outline: 'none', resize: 'none', boxSizing: 'border-box', boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)' },
+  textarea: { width: '100%', height: '160px', padding: '20px', borderRadius: '16px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', fontSize: '15px', lineHeight: '1.5', outline: 'none', resize: 'none', boxSizing: 'border-box', boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)' },
   
   btnPrimary: { width: '100%', padding: '18px', background: 'linear-gradient(90deg, #0284c7 0%, #0369a1 100%)', color: 'white', border: 'none', borderRadius: '16px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginTop: 'auto', boxShadow: '0 10px 25px -5px rgba(2, 132, 199, 0.4)' },
   btnDisabled: { width: '100%', padding: '18px', background: '#cbd5e1', color: '#64748b', border: 'none', borderRadius: '16px', fontSize: '16px', fontWeight: '700', marginTop: 'auto', cursor: 'not-allowed' },
@@ -227,7 +261,6 @@ const styles = {
   emptyStateText: { fontSize: '20px', color: '#0f172a', margin: '0 0 10px 0' },
   emptyStateSubtext: { color: '#475569', textAlign: 'center', maxWidth: '300px' },
 
-  /* --- JOBSCAN-STYLE AUTHENTICATION STYLES --- */
   authWrapper: { display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '40px' },
   authLogoContainer: { marginBottom: '30px' },
   authCard: { width: '100%', maxWidth: '450px', background: '#ffffff', borderRadius: '8px', border: '1px solid #e2e8f0', padding: '40px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.05)' },
@@ -246,7 +279,6 @@ const styles = {
   authFooter: { marginTop: '30px', textAlign: 'center', fontSize: '14px', color: '#475569' },
   link: { color: '#0062cc', fontWeight: '700', cursor: 'pointer' },
 
-  /* --- FOOTER STYLES --- */
   footer: { marginTop: 'auto', padding: '24px 50px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(0, 0, 0, 0.05)', fontSize: '14px', color: '#64748b' },
   footerText: { fontWeight: '500' },
   footerLinks: { display: 'flex', gap: '24px' },
