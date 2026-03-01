@@ -2,4 +2,5 @@
 __pycache__/
 *.pyc
 .vscode/
+server/uploads/
 server/node_modules/
