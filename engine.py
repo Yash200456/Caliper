@@ -1,14 +1,11 @@
 import sys
 import os
 import fitz  # PyMuPDF
-import google.generativeai as genai
+from google import genai
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
-
-# Configure the Gemini API key
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
 def extract_text_from_pdf(pdf_path):
     try:
@@ -21,8 +18,8 @@ def extract_text_from_pdf(pdf_path):
         return f"Error reading PDF: {e}"
 
 def run_ai(text, jd, mode):
-    # Fixed model name with exact hyphen formatting
-    model_id = "gemini-pro"
+    # Using the modern model your friend recommended!
+    model_id = "gemini-2.5-flash"
     
     if mode == "interview":
         prompt = f"Based on this resume: {text} and JD: {jd}, generate 5 tough technical interview questions targeting their specific skills."
@@ -30,9 +27,12 @@ def run_ai(text, jd, mode):
         prompt = f"Analyze this resume: {text} against this JD: {jd}. Provide a match score out of 100, highlight missing hard skills, and give 3 actionable tips for improvement."
 
     try:
-        # Initialize the model and generate the response
-        model = genai.GenerativeModel(model_id)
-        response = model.generate_content(prompt)
+        # Implementing the new unified GenAI Client syntax
+        client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+        response = client.models.generate_content(
+            model=model_id,
+            contents=prompt
+        )
         return response.text
     except Exception as e:
         return f"AI Error: {e}"

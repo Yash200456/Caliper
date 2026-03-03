@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './App.css'; 
 
 const App = () => {
   const [currentView, setCurrentView] = useState('dashboard');
@@ -37,20 +38,20 @@ const App = () => {
   };
 
   return (
-    <div style={styles.pageContainer}>
+    <div className="page-container">
       
       {/* --- The Navbar --- */}
-      <nav style={styles.navbar}>
-        <div onClick={() => setCurrentView('dashboard')} style={{cursor: 'pointer', ...styles.navLeft}}>
-          <h1 style={styles.logo}>
-            CareerOrbit <span style={styles.logoHighlight}>AI</span>
+      <nav className="navbar">
+        <div onClick={() => setCurrentView('dashboard')} style={{cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '15px'}}>
+          <h1 style={{margin: 0, fontSize: '26px', fontWeight: '800', letterSpacing: '-0.5px'}}>
+            CareerOrbit <span style={{color: '#6366f1'}}>AI</span>
           </h1>
-          <div style={styles.badge}>Reva ISE Edition</div>
+          <div style={{background: '#eff6ff', color: '#3b82f6', padding: '6px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: '600'}}>Reva ISE Edition</div>
         </div>
 
-        <div style={styles.navRight}>
-          <button style={styles.btnLogin} onClick={() => setCurrentView('login')}>Log In</button>
-          <button style={styles.btnSignup} onClick={() => setCurrentView('signup')}>Sign Up</button>
+        <div style={{display: 'flex', alignItems: 'center', gap: '20px'}}>
+          <button className="btn-ghost" onClick={() => setCurrentView('login')}>Log In</button>
+          <button className="btn-pill" onClick={() => setCurrentView('signup')}>Sign Up</button>
         </div>
       </nav>
 
@@ -58,77 +59,71 @@ const App = () => {
       
       {/* 1. THE DASHBOARD VIEW */}
       {currentView === 'dashboard' && (
-        <div style={styles.dashboard}>
+        <div style={{display: 'flex', gap: '30px', padding: '40px 50px', flex: 1}}>
           
-          {/* PHASE 2: LEFT COLUMN 3-STEP PROCESS */}
-          <div style={styles.glassCard}>
-            <div style={styles.cardHeader}>
-              <h2 style={styles.cardTitle}>Candidate Setup</h2>
-              <p style={styles.cardSubtitle}>Complete the steps below to initialize AI analysis.</p>
+          {/* Left Column */}
+          <div className="glass-card">
+            <div style={{marginBottom: '35px', textAlign: 'center'}}>
+              <h2 style={{margin: 0, fontSize: '24px', fontWeight: '700', color: '#1e293b'}}>Select Resume for Analysis</h2>
+              <p style={{margin: '8px 0 0 0', fontSize: '15px', color: '#64748b'}}>Choose a sample resume below and define the target role.</p>
             </div>
 
-            {/* Step 1 */}
-            <div style={styles.stepContainer}>
-              <div style={styles.stepHeader}>
-                <div style={styles.stepNumber}>1</div>
-                <h3 style={styles.stepTitle}>Upload Credentials</h3>
+            <div style={{marginBottom: '25px', paddingBottom: '25px'}}>
+              <div style={{display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '15px'}}>
+                <div style={{background: '#f1f5f9', color: '#64748b', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: '700'}}>1</div>
+                <h3 style={{margin: 0, fontSize: '16px', fontWeight: '600', color: '#1e293b'}}>Upload Credentials</h3>
               </div>
-              <div style={styles.stepContent}>
-                <label style={styles.label}>📄 Resume Document (PDF)</label>
-                <div style={styles.fileDropZone}>
-                  <input type="file" accept=".pdf" onChange={(e) => setFile(e.target.files[0])} style={styles.fileInput} />
-                </div>
-              </div>
-            </div>
-
-            {/* Step 2 */}
-            <div style={styles.stepContainer}>
-              <div style={styles.stepHeader}>
-                <div style={styles.stepNumber}>2</div>
-                <h3 style={styles.stepTitle}>Define Target Role</h3>
-              </div>
-              <div style={styles.stepContent}>
-                <label style={styles.label}>🎯 Job Description</label>
-                <textarea 
-                  placeholder="Paste the technical requirements, skills, and role details here..." 
-                  value={jd} onChange={(e) => setJd(e.target.value)} style={styles.textarea}
-                />
+              <div className="file-drop-zone">
+                <div style={{fontSize: '24px', color: '#94a3b8', marginBottom: '10px', border: '1px solid #cbd5e1', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>↑</div>
+                <h4 style={{margin: '0 0 5px 0', fontSize: '16px', fontWeight: '600', color: '#0f172a'}}>Click to upload your own resume</h4>
+                <p style={{margin: '0 0 15px 0', fontSize: '13px', color: '#64748b'}}>PDF or DOCX (max 5MB)</p>
+                <input type="file" accept=".pdf" onChange={(e) => setFile(e.target.files[0])} style={{display: 'none'}} id="file-upload" />
+                <label htmlFor="file-upload" className="file-input-label">Browse Files</label>
+                {file && <p style={{marginTop: '10px', color: '#6366f1', fontWeight: '600'}}>{file.name}</p>}
               </div>
             </div>
 
-            {/* Step 3 */}
-            <div style={{...styles.stepContainer, borderBottom: 'none', paddingBottom: 0, marginBottom: 0}}>
-              <div style={styles.stepHeader}>
-                <div style={styles.stepNumber}>3</div>
-                <h3 style={styles.stepTitle}>Initialize AI</h3>
+            <div style={{marginBottom: '25px', paddingBottom: '25px'}}>
+              <div style={{display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '15px'}}>
+                <div style={{background: '#f1f5f9', color: '#64748b', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: '700'}}>2</div>
+                <h3 style={{margin: 0, fontSize: '16px', fontWeight: '600', color: '#1e293b'}}>Define Target Role</h3>
               </div>
-              <div style={styles.stepContent}>
-                <button onClick={handleUpload} disabled={loading} style={loading ? styles.btnDisabled : styles.btnPrimary}>
-                  {loading ? "✨ AI is Analyzing..." : "🚀 Generate Intelligence Report"}
-                </button>
-              </div>
+              <textarea 
+                className="custom-textarea"
+                placeholder="Paste the technical requirements, skills, and role details here..." 
+                value={jd} onChange={(e) => setJd(e.target.value)} 
+              />
             </div>
 
+            <div>
+              <div style={{display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '15px'}}>
+                <div style={{background: '#f1f5f9', color: '#64748b', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: '700'}}>3</div>
+                <h3 style={{margin: 0, fontSize: '16px', fontWeight: '600', color: '#1e293b'}}>Initialize AI</h3>
+              </div>
+              <button onClick={handleUpload} disabled={loading} className={loading ? "btn-disabled" : "btn-generate"}>
+                {loading ? "✨ Analyzing Data..." : "🚀 Generate Intelligence Report"}
+              </button>
+            </div>
           </div>
 
-          {/* RIGHT COLUMN: Output */}
-          <div style={styles.glassCard}>
+          {/* Right Column */}
+          <div className="glass-card">
             {result ? (
               <>
-                <div style={styles.resultHeader}>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid #e2e8f0', paddingBottom: '20px'}}>
                   <div>
-                    <h2 style={styles.cardTitle}>📊 Analysis Complete</h2>
-                    <p style={styles.cardSubtitle}>Here is your personalized roadmap</p>
+                    <h2 style={{margin: 0, fontSize: '24px', fontWeight: '700', color: '#1e293b'}}>📊 Analysis Complete</h2>
+                    <p style={{margin: '8px 0 0 0', fontSize: '15px', color: '#64748b'}}>Here is your personalized roadmap</p>
                   </div>
-                  <button style={styles.btnSecondary} onClick={() => window.print()}>Download PDF</button>
+                  <button style={{background: 'transparent', color: '#2563eb', border: '1px solid #2563eb', padding: '8px 16px', borderRadius: '20px', cursor: 'pointer', fontWeight: '600', fontSize: '14px'}}>Download PDF</button>
                 </div>
-                <div style={styles.resultContent}>{result}</div>
+                <div style={{color: '#334155', fontSize: '15px', lineHeight: '1.8', whiteSpace: 'pre-wrap', overflowY: 'auto', paddingRight: '10px'}}>{result}</div>
               </>
             ) : (
-              <div style={styles.emptyState}>
-                <div style={styles.emptyStateIcon}>🤖</div>
-                <h3 style={styles.emptyStateText}>Awaiting Input</h3>
-                <p style={styles.emptyStateSubtext}>Upload a resume and JD to see the AI magic happen right here.</p>
+              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center', padding: '0 40px'}}>
+                <div style={{fontSize: '48px', color: '#cbd5e1', marginBottom: '20px', background: '#f8fafc', padding: '20px', borderRadius: '20px'}}>📄</div>
+                <h3 style={{fontSize: '20px', fontWeight: '600', color: '#1e293b', margin: '0 0 10px 0'}}>Ready to see the magic?</h3>
+                <p style={{color: '#64748b', fontSize: '15px', lineHeight: '1.6'}}>Select a sample resume and target JD to see our AI-powered analysis in action.</p>
               </div>
             )}
           </div>
@@ -137,152 +132,116 @@ const App = () => {
 
       {/* 2. THE LOGIN VIEW */}
       {currentView === 'login' && (
-        <div style={styles.authWrapper}>
-          <div style={styles.authLogoContainer}>
-            <h1 style={styles.logo}>CareerOrbit <span style={styles.logoHighlight}>AI</span></h1>
+        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '60px 20px'}}>
+          
+          {/* Pro Auth Header: Logo on Left, Circled Back Arrow on Right */}
+          <div style={{width: '100%', maxWidth: '420px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px'}}>
+            <h1 onClick={() => setCurrentView('dashboard')} style={{margin: 0, fontSize: '28px', fontWeight: '800', letterSpacing: '-0.5px', color: '#0f172a', cursor: 'pointer'}}>
+              CareerOrbit <span style={{color: '#6366f1'}}>AI</span>
+            </h1>
+            <button onClick={() => setCurrentView('dashboard')} className="btn-icon" title="Back to Home">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 8l-4 4 4 4M16 12H8"/>
+              </svg>
+            </button>
           </div>
           
-          <div style={styles.authCard}>
-            <h2 style={styles.authTitle}>Welcome back.</h2>
-
-            <form onSubmit={handleAuth} style={styles.authForm}>
-              <div style={styles.authInputGroup}>
-                <label style={styles.authLabel}>Email *</label>
-                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} style={styles.authInput} />
+          <div className="glass-card" style={{width: '100%', maxWidth: '420px', flex: 'none', padding: '40px'}}>
+            <h2 style={{margin: '0 0 30px 0', fontSize: '24px', fontWeight: '700', textAlign: 'center', color: '#1e293b'}}>Welcome back.</h2>
+            <form onSubmit={handleAuth} style={{display: 'flex', flexDirection: 'column'}}>
+              <div style={{marginBottom: '20px'}}>
+                <label style={{display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569'}}>Email *</label>
+                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} style={{width: '100%', padding: '12px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: '15px', outline: 'none', boxSizing: 'border-box'}} />
               </div>
-              <div style={styles.authInputGroup}>
-                <label style={styles.authLabel}>Password *</label>
-                <div style={{position: 'relative'}}>
-                  <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} style={{...styles.authInput, paddingRight: '40px'}} />
-                  <span style={styles.eyeIcon}>👁️</span>
-                </div>
+              <div style={{marginBottom: '20px'}}>
+                <label style={{display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569'}}>Password *</label>
+                <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} style={{width: '100%', padding: '12px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: '15px', outline: 'none', boxSizing: 'border-box'}} />
               </div>
-              
-              <div style={styles.forgotPasswordContainer}>
-                <span style={styles.link}>Forgot password?</span>
-              </div>
-
-              <button type="submit" style={styles.authSubmitBtn}>Log in</button>
+              <div style={{textAlign: 'left', marginBottom: '20px'}}><span style={{color: '#2563eb', fontWeight: '600', cursor: 'pointer', fontSize: '14px'}}>Forgot password?</span></div>
+              <button type="submit" className="btn-generate">Log in</button>
             </form>
-            <p style={styles.authFooter}>Don't have an account? <span style={styles.link} onClick={() => setCurrentView('signup')}>Sign up</span></p>
+            <p style={{marginTop: '30px', textAlign: 'center', fontSize: '14px', color: '#64748b'}}>Don't have an account? <span style={{color: '#2563eb', fontWeight: '600', cursor: 'pointer'}} onClick={() => setCurrentView('signup')}>Sign up</span></p>
           </div>
         </div>
       )}
 
       {/* 3. THE SIGNUP VIEW */}
       {currentView === 'signup' && (
-        <div style={styles.authWrapper}>
-          <div style={styles.authLogoContainer}>
-            <h1 style={styles.logo}>CareerOrbit <span style={styles.logoHighlight}>AI</span></h1>
+        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '60px 20px'}}>
+          
+          {/* Pro Auth Header: Logo on Left, Circled Back Arrow on Right */}
+          <div style={{width: '100%', maxWidth: '420px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px'}}>
+            <h1 onClick={() => setCurrentView('dashboard')} style={{margin: 0, fontSize: '28px', fontWeight: '800', letterSpacing: '-0.5px', color: '#0f172a', cursor: 'pointer'}}>
+              CareerOrbit <span style={{color: '#6366f1'}}>AI</span>
+            </h1>
+            <button onClick={() => setCurrentView('dashboard')} className="btn-icon" title="Back to Home">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 8l-4 4 4 4M16 12H8"/>
+              </svg>
+            </button>
           </div>
           
-          <div style={styles.authCard}>
-            <h2 style={styles.authTitle}>Sign up for CareerOrbit</h2>
-            
-            <form onSubmit={handleAuth} style={styles.authForm}>
-              <div style={styles.authInputGroup}>
-                <label style={styles.authLabel}>Email *</label>
-                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} style={styles.authInput} />
+          <div className="glass-card" style={{width: '100%', maxWidth: '420px', flex: 'none', padding: '40px'}}>
+            <h2 style={{margin: '0 0 30px 0', fontSize: '24px', fontWeight: '700', textAlign: 'center', color: '#1e293b'}}>Sign up for CareerOrbit</h2>
+            <form onSubmit={handleAuth} style={{display: 'flex', flexDirection: 'column'}}>
+              <div style={{marginBottom: '20px'}}>
+                <label style={{display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569'}}>Email *</label>
+                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} style={{width: '100%', padding: '12px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: '15px', outline: 'none', boxSizing: 'border-box'}} />
               </div>
-              <div style={styles.authInputGroup}>
-                <label style={styles.authLabel}>Password *</label>
-                <div style={{position: 'relative'}}>
-                  <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} style={{...styles.authInput, paddingRight: '40px'}} />
-                  <span style={styles.eyeIcon}>👁️</span>
-                </div>
-                <p style={styles.helperText}>8 or more characters</p>
+              <div style={{marginBottom: '20px'}}>
+                <label style={{display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569'}}>Password *</label>
+                <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} style={{width: '100%', padding: '12px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: '15px', outline: 'none', boxSizing: 'border-box'}} />
+                <p style={{margin: '6px 0 0 0', fontSize: '12px', color: '#94a3b8'}}>8 or more characters</p>
               </div>
-              
-              <button type="submit" style={styles.authSubmitBtn}>Create account</button>
+              <button type="submit" className="btn-generate">Create account</button>
             </form>
-            <p style={styles.authFooter}>Already have an account? <span style={styles.link} onClick={() => setCurrentView('login')}>Log in</span></p>
+            <p style={{marginTop: '30px', textAlign: 'center', fontSize: '14px', color: '#64748b'}}>Already have an account? <span style={{color: '#2563eb', fontWeight: '600', cursor: 'pointer'}} onClick={() => setCurrentView('login')}>Log in</span></p>
           </div>
         </div>
       )}
 
-      {/* --- THE GLOBAL FOOTER --- */}
-      <footer style={styles.footer}>
-        <div style={styles.footerText}>
-          © 2026 CareerOrbit AI. Built by Yashwanth Gowda.
+      {/* --- MEGA DARK FOOTER --- */}
+      <footer className="mega-footer">
+        <div style={{display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #1e293b', paddingBottom: '40px', marginBottom: '30px', flexWrap: 'wrap', gap: '40px'}}>
+          <div style={{maxWidth: '300px'}}>
+            <h2 style={{margin: 0, fontSize: '24px', fontWeight: '800', letterSpacing: '-0.5px', color: '#ffffff'}}>CareerOrbit <span style={{color: '#a855f7'}}>AI</span></h2>
+            <p style={{marginTop: '15px', fontSize: '14px', lineHeight: '1.6', color: '#cbd5e1'}}>Helping professionals optimize their job applications and land their dream careers since 2026.</p>
+          </div>
+          
+          <div style={{display: 'flex', gap: '80px', flexWrap: 'wrap'}}>
+            <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+              <h4 style={{color: '#6366f1', fontSize: '16px', fontWeight: '600', margin: '0 0 10px 0'}}>Services</h4>
+              <span className="footer-link">CV Scoring (ATS)</span>
+              <span className="footer-link">Job Matching Score</span>
+              <span className="footer-link">Cover Letter Generator</span>
+            </div>
+            <div style={{display: 'flex', flexDirection: 'column', gap: '12px'}}>
+              <h4 style={{color: '#6366f1', fontSize: '16px', fontWeight: '600', margin: '0 0 10px 0'}}>Resources</h4>
+              <span className="footer-link">About Us</span>
+              <span className="footer-link">Contact Us</span>
+              <span className="footer-link">Pricing</span>
+            </div>
+          </div>
         </div>
-        <div style={styles.footerLinks}>
-          <span style={styles.footerLink}>Privacy Policy</span>
-          <span style={styles.footerLink}>Terms of Service</span>
-          <span style={styles.footerLink}>Contact</span>
+
+        <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '13px', alignItems: 'center'}}>
+          <div style={{display: 'flex', gap: '20px'}}>
+            <span>© 2026 CareerOrbit AI. All rights reserved.</span>
+          </div>
+          <div style={{display: 'flex', cursor: 'pointer'}}>
+            <span className="footer-link">Privacy Policy</span>
+            <span className="footer-link" style={{marginLeft: '15px'}}>Terms of Service</span>
+          </div>
+        </div>
+        <div style={{textAlign: 'center', marginTop: '30px', fontSize: '13px', color: '#64748b'}}>
+          Made with ❤️ by Yashwanth Gowda
         </div>
       </footer>
 
     </div>
   );
-};
-
-// --- STYLES ---
-const styles = {
-  pageContainer: { minHeight: '100vh', background: 'linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%)', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif", color: '#0f172a', display: 'flex', flexDirection: 'column' },
-  navbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 50px', borderBottom: '1px solid rgba(0, 0, 0, 0.05)' },
-  navLeft: { display: 'flex', alignItems: 'center', gap: '15px' },
-  navRight: { display: 'flex', alignItems: 'center', gap: '12px' },
-  
-  btnLogin: { background: '#ffffff', border: '1px solid #cccccc', color: '#1a4b82', fontSize: '15px', fontWeight: '700', cursor: 'pointer', padding: '8px 16px', borderRadius: '4px', transition: 'background 0.2s' },
-  btnSignup: { background: '#0062cc', color: '#ffffff', border: 'none', borderRadius: '4px', padding: '9px 20px', fontSize: '15px', fontWeight: '700', cursor: 'pointer', transition: 'background 0.2s' },
-  
-  logo: { margin: 0, fontSize: '28px', fontWeight: '800', letterSpacing: '-0.5px', color: '#0f172a' },
-  logoHighlight: { color: '#0284c7' },
-  badge: { background: 'rgba(2, 132, 199, 0.1)', color: '#0284c7', padding: '6px 14px', borderRadius: '20px', fontSize: '13px', fontWeight: '600', border: '1px solid rgba(2, 132, 199, 0.2)' },
-  
-  dashboard: { display: 'flex', flexDirection: 'row', gap: '30px', padding: '40px 50px', flex: 1 },
-  glassCard: { flex: 1, background: 'linear-gradient(145deg, rgba(248, 250, 252, 0.85) 0%, rgba(226, 232, 240, 0.85) 100%)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderRadius: '24px', border: '1px solid rgba(203, 213, 225, 0.6)', padding: '40px', boxShadow: '0 25px 50px -12px rgba(15, 23, 42, 0.08)', display: 'flex', flexDirection: 'column' },
-  
-  cardHeader: { marginBottom: '30px' },
-  cardTitle: { margin: 0, fontSize: '24px', fontWeight: '700', color: '#0f172a' },
-  cardSubtitle: { margin: '8px 0 0 0', fontSize: '14px', color: '#475569' },
-  
-  /* --- PHASE 2: NEW 3-STEP STYLES --- */
-  stepContainer: { marginBottom: '25px', paddingBottom: '25px', borderBottom: '1px solid rgba(0,0,0,0.05)' },
-  stepHeader: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '15px' },
-  stepNumber: { background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)', color: 'white', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '15px', fontWeight: 'bold', boxShadow: '0 4px 10px rgba(2, 132, 199, 0.3)' },
-  stepTitle: { margin: 0, fontSize: '18px', fontWeight: '700', color: '#1e293b' },
-  stepContent: { paddingLeft: '44px' }, // Indents the inputs to perfectly align with the text, not the circle
-  /* ---------------------------------- */
-
-  label: { display: 'block', marginBottom: '10px', fontSize: '14px', fontWeight: '600', color: '#334155' },
-  fileDropZone: { border: '2px dashed rgba(148, 163, 184, 0.5)', borderRadius: '16px', padding: '20px', background: 'rgba(241, 245, 249, 0.5)', transition: 'border 0.3s ease' },
-  fileInput: { width: '100%', color: '#0f172a' },
-  textarea: { width: '100%', height: '160px', padding: '20px', borderRadius: '16px', border: '1px solid #cbd5e1', background: '#f8fafc', color: '#0f172a', fontSize: '15px', lineHeight: '1.5', outline: 'none', resize: 'none', boxSizing: 'border-box', boxShadow: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)' },
-  
-  btnPrimary: { width: '100%', padding: '18px', background: 'linear-gradient(90deg, #0284c7 0%, #0369a1 100%)', color: 'white', border: 'none', borderRadius: '16px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginTop: 'auto', boxShadow: '0 10px 25px -5px rgba(2, 132, 199, 0.4)' },
-  btnDisabled: { width: '100%', padding: '18px', background: '#cbd5e1', color: '#64748b', border: 'none', borderRadius: '16px', fontSize: '16px', fontWeight: '700', marginTop: 'auto', cursor: 'not-allowed' },
-  btnSecondary: { background: 'transparent', color: '#0284c7', border: '1px solid rgba(2, 132, 199, 0.4)', padding: '10px 20px', borderRadius: '10px', cursor: 'pointer', fontWeight: '600' },
-  
-  resultHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '20px' },
-  resultContent: { color: '#334155', fontSize: '16px', lineHeight: '1.8', whiteSpace: 'pre-wrap', overflowY: 'auto', paddingRight: '10px' },
-  emptyState: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', opacity: 0.8 },
-  emptyStateIcon: { fontSize: '60px', marginBottom: '20px' },
-  emptyStateText: { fontSize: '20px', color: '#0f172a', margin: '0 0 10px 0' },
-  emptyStateSubtext: { color: '#475569', textAlign: 'center', maxWidth: '300px' },
-
-  authWrapper: { display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '40px' },
-  authLogoContainer: { marginBottom: '30px' },
-  authCard: { width: '100%', maxWidth: '450px', background: '#ffffff', borderRadius: '8px', border: '1px solid #e2e8f0', padding: '40px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.05)' },
-  authTitle: { margin: '0 0 30px 0', fontSize: '24px', fontWeight: '600', textAlign: 'center', color: '#1e293b' },
-  
-  authForm: { display: 'flex', flexDirection: 'column' },
-  authInputGroup: { marginBottom: '20px' },
-  authLabel: { display: 'block', marginBottom: '8px', fontSize: '14px', color: '#334155' },
-  authInput: { width: '100%', padding: '12px 14px', borderRadius: '4px', border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: '15px', outline: 'none', boxSizing: 'border-box' },
-  eyeIcon: { position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', opacity: 0.5 },
-  helperText: { margin: '6px 0 0 0', fontSize: '12px', color: '#64748b' },
-  
-  forgotPasswordContainer: { textAlign: 'left', marginBottom: '20px' },
-  authSubmitBtn: { width: '100%', padding: '14px', background: '#0062cc', color: 'white', border: 'none', borderRadius: '4px', fontSize: '16px', fontWeight: '700', cursor: 'pointer', transition: 'background 0.2s' },
-  
-  authFooter: { marginTop: '30px', textAlign: 'center', fontSize: '14px', color: '#475569' },
-  link: { color: '#0062cc', fontWeight: '700', cursor: 'pointer' },
-
-  footer: { marginTop: 'auto', padding: '24px 50px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(0, 0, 0, 0.05)', fontSize: '14px', color: '#64748b' },
-  footerText: { fontWeight: '500' },
-  footerLinks: { display: 'flex', gap: '24px' },
-  footerLink: { cursor: 'pointer', fontWeight: '500', transition: 'color 0.2s' }
 };
 
 export default App;
