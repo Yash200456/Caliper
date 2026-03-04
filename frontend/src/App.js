@@ -3,7 +3,7 @@ import axios from 'axios';
 import './App.css'; 
 
 const App = () => {
-  const [currentView, setCurrentView] = useState('dashboard');
+  const [currentView, setCurrentView] = useState('dashboard'); // Restored default view
 
   const [file, setFile] = useState(null);
   const [jd, setJd] = useState('');
@@ -101,7 +101,7 @@ const App = () => {
                 <h3 style={{margin: 0, fontSize: '16px', fontWeight: '600', color: '#1e293b'}}>Initialize AI</h3>
               </div>
               <button onClick={handleUpload} disabled={loading} className={loading ? "btn-disabled" : "btn-generate"}>
-                {loading ? "✨ Analyzing Data..." : "🚀 Generate Intelligence Report"}
+                {loading ? "✨ Analyzing Data..." : "Scan your Resume"}
               </button>
             </div>
           </div>
@@ -134,7 +134,6 @@ const App = () => {
       {currentView === 'login' && (
         <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '60px 20px'}}>
           
-          {/* Pro Auth Header: Logo on Left, Circled Back Arrow on Right */}
           <div style={{width: '100%', maxWidth: '420px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px'}}>
             <h1 onClick={() => setCurrentView('dashboard')} style={{margin: 0, fontSize: '28px', fontWeight: '800', letterSpacing: '-0.5px', color: '#0f172a', cursor: 'pointer'}}>
               CareerOrbit <span style={{color: '#6366f1'}}>AI</span>
@@ -170,7 +169,6 @@ const App = () => {
       {currentView === 'signup' && (
         <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '60px 20px'}}>
           
-          {/* Pro Auth Header: Logo on Left, Circled Back Arrow on Right */}
           <div style={{width: '100%', maxWidth: '420px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px'}}>
             <h1 onClick={() => setCurrentView('dashboard')} style={{margin: 0, fontSize: '28px', fontWeight: '800', letterSpacing: '-0.5px', color: '#0f172a', cursor: 'pointer'}}>
               CareerOrbit <span style={{color: '#6366f1'}}>AI</span>
@@ -236,7 +234,7 @@ const App = () => {
           </div>
         </div>
         <div style={{textAlign: 'center', marginTop: '30px', fontSize: '13px', color: '#64748b'}}>
-          Made with ❤️ by Yashwanth Gowda
+          Made by Yashwanth Gowda
         </div>
       </footer>
 

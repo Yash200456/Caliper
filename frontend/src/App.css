@@ -7,18 +7,16 @@ body, html {
   padding: 0;
   width: 100%;
   min-height: 100vh;
-  background-color: #f8fafc; /* Premium off-white SaaS background */
+  background-color: #f8fafc;
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   color: #0f172a;
 }
 
-/* Headings */
 h1, h2, h3, h4 {
   font-family: 'Poppins', sans-serif;
 }
 
-/* Page Layout */
 .page-container {
   display: flex;
   flex-direction: column;
@@ -49,9 +47,7 @@ h1, h2, h3, h4 {
   cursor: pointer;
   transition: color 0.2s ease;
 }
-.btn-ghost:hover {
-  color: #6366f1;
-}
+.btn-ghost:hover { color: #6366f1; }
 
 .btn-pill {
   background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
@@ -91,16 +87,9 @@ h1, h2, h3, h4 {
 }
 
 .btn-disabled {
-  width: 100%;
-  padding: 16px;
-  background: #cbd5e1;
-  color: #64748b;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  margin-top: 10px;
-  cursor: not-allowed;
+  width: 100%; padding: 16px; background: #cbd5e1; color: #64748b;
+  border: none; border-radius: 12px; font-size: 16px; font-weight: 600;
+  margin-top: 10px; cursor: not-allowed;
 }
 
 /* Glass Cards with Hover Lift */
@@ -133,65 +122,32 @@ h1, h2, h3, h4 {
   text-align: center;
   transition: all 0.2s ease;
 }
-.file-drop-zone:hover {
-  border-color: #6366f1;
-  background: #e0e7ff;
-}
+.file-drop-zone:hover { border-color: #6366f1; background: #e0e7ff; }
+
 .file-input-label {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  color: #334155;
-  transition: all 0.2s ease;
+  background: #ffffff; border: 1px solid #e2e8f0; padding: 8px 16px;
+  border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500;
+  color: #334155; transition: all 0.2s ease;
 }
-.file-input-label:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
-}
+.file-input-label:hover { background: #f1f5f9; border-color: #cbd5e1; }
 
 /* Textarea focus glow */
 .custom-textarea {
-  width: 100%;
-  height: 140px;
-  padding: 16px;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  background: #ffffff;
-  color: #0f172a;
-  font-size: 14px;
-  outline: none;
-  resize: none;
-  box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%; height: 140px; padding: 16px; border-radius: 12px;
+  border: 1px solid #e2e8f0; background: #ffffff; color: #0f172a;
+  font-size: 14px; outline: none; resize: none; box-sizing: border-box;
+  font-family: 'Inter', sans-serif; transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.custom-textarea:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-}
+.custom-textarea:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
 
 /* Mega Dark Footer */
 .mega-footer {
-  margin-top: auto;
-  background: #0f172a;
-  color: #94a3b8;
-  padding: 60px 80px 30px 80px;
+  margin-top: auto; background: #0f172a; color: #94a3b8; padding: 60px 80px 30px 80px;
 }
-.footer-link {
-  font-size: 14px;
-  cursor: pointer;
-  transition: color 0.2s ease;
-  color: #cbd5e1;
-}
-.footer-link:hover {
-  color: #a855f7;
-}
+.footer-link { font-size: 14px; cursor: pointer; transition: color 0.2s ease; color: #cbd5e1; }
+.footer-link:hover { color: #a855f7; }
 
-/* Circular Icon Button */
+/* Circular Icon Button (For Login Back Button) */
 .btn-icon {
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -208,7 +164,7 @@ h1, h2, h3, h4 {
 }
 .btn-icon:hover {
   background: #f8fafc;
-  color: #6366f1; /* Indigo highlight on hover */
+  color: #6366f1;
   border-color: #cbd5e1;
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(0,0,0,0.06);
