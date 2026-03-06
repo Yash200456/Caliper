@@ -32,8 +32,13 @@ app.post('/api/analyze', upload.single('resume'), (req, res) => {
 
     python.on('close', (code) => {
         console.log("✅ Analysis complete. Sending to React.");
-        // CRITICAL FIX: The key 'analysis' must match what React is expecting
-        res.json({ analysis: output });
+        try {
+            const parsed = JSON.parse(output.trim());
+            res.json(parsed);
+        } catch (e) {
+            console.error("Failed to parse AI response as JSON:", output);
+            res.json({ error: "Failed to parse analysis result" });
+        }
     });
 });
 

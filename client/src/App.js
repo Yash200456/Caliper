@@ -3,11 +3,11 @@ import axios from 'axios';
 import './App.css'; 
 
 const App = () => {
-  const [currentView, setCurrentView] = useState('dashboard'); // Restored default view
+  const [currentView, setCurrentView] = useState('home'); // Changed default to home
 
   const [file, setFile] = useState(null);
   const [jd, setJd] = useState('');
-  const [result, setResult] = useState('');
+  const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const [email, setEmail] = useState('');
@@ -23,7 +23,8 @@ const App = () => {
 
     try {
       const response = await axios.post('http://localhost:5000/api/analyze', formData);
-      setResult(response.data.analysis);
+      setResult(response.data);
+      setCurrentView('results');
     } catch (err) {
       console.error(err);
       alert("Backend error: Ensure Node.js is running on port 5000.");
@@ -34,7 +35,7 @@ const App = () => {
   const handleAuth = (e) => {
     e.preventDefault();
     alert(`Simulating ${currentView} for: ${email}`);
-    setCurrentView('dashboard'); 
+    setCurrentView('home'); 
   };
 
   return (
@@ -42,7 +43,7 @@ const App = () => {
       
       {/* --- The Navbar --- */}
       <nav className="navbar">
-        <div onClick={() => setCurrentView('dashboard')} style={{cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '15px'}}>
+        <div onClick={() => setCurrentView('home')} style={{cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '15px'}}>
           <h1 style={{margin: 0, fontSize: '26px', fontWeight: '800', letterSpacing: '-0.5px'}}>
             CareerOrbit <span style={{color: '#6366f1'}}>AI</span>
           </h1>
@@ -57,12 +58,54 @@ const App = () => {
 
       {/* --- CONDITIONAL RENDERING --- */}
       
+      {/* 0. THE HOME VIEW */}
+      {currentView === 'home' && (
+        <div style={{flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '60px 20px', background: '#ffffff', color: '#0f172a', textAlign: 'center'}}>
+          <div style={{maxWidth: '800px', marginBottom: '60px'}}>
+            <h1 style={{fontSize: '4rem', fontWeight: '800', margin: '0 0 20px 0', lineHeight: '1.1', color: '#1e293b'}}>
+              Elevate Your Career with AI-Powered Resume Analysis
+            </h1>
+            <p style={{fontSize: '1.25rem', lineHeight: '1.6', margin: '0 0 40px 0', color: '#64748b'}}>
+              Get instant insights into your resume's ATS compatibility, skill gaps, and personalized improvement tips. Land your dream job faster with CareerOrbit AI.
+            </p>
+            <button onClick={() => setCurrentView('dashboard')} className="btn-pill" style={{fontSize: '1.1rem', padding: '16px 32px'}}>
+              🚀 Scan Your Resume
+            </button>
+          </div>
+          
+          <div style={{display: 'flex', gap: '40px', flexWrap: 'wrap', justifyContent: 'center'}}>
+            <div style={{background: '#f8fafc', borderRadius: '20px', padding: '30px', maxWidth: '250px', border: '1px solid #e2e8f0', transition: 'transform 0.2s ease, box-shadow 0.2s ease'}} className="hover-lift">
+              <div style={{fontSize: '3rem', marginBottom: '15px'}}>📊</div>
+              <h3 style={{margin: '0 0 10px 0', fontSize: '1.25rem', fontWeight: '600', color: '#1e293b'}}>ATS Scoring</h3>
+              <p style={{margin: 0, fontSize: '0.9rem', lineHeight: '1.5', color: '#64748b'}}>Check how well your resume passes Applicant Tracking Systems.</p>
+            </div>
+            <div style={{background: '#f8fafc', borderRadius: '20px', padding: '30px', maxWidth: '250px', border: '1px solid #e2e8f0', transition: 'transform 0.2s ease, box-shadow 0.2s ease'}} className="hover-lift">
+              <div style={{fontSize: '3rem', marginBottom: '15px'}}>🎯</div>
+              <h3 style={{margin: '0 0 10px 0', fontSize: '1.25rem', fontWeight: '600', color: '#1e293b'}}>Job Matching</h3>
+              <p style={{margin: 0, fontSize: '0.9rem', lineHeight: '1.5', color: '#64748b'}}>See how closely your skills align with job requirements.</p>
+            </div>
+            <div style={{background: '#f8fafc', borderRadius: '20px', padding: '30px', maxWidth: '250px', border: '1px solid #e2e8f0', transition: 'transform 0.2s ease, box-shadow 0.2s ease'}} className="hover-lift">
+              <div style={{fontSize: '3rem', marginBottom: '15px'}}>💡</div>
+              <h3 style={{margin: '0 0 10px 0', fontSize: '1.25rem', fontWeight: '600', color: '#1e293b'}}>Smart Tips</h3>
+              <p style={{margin: 0, fontSize: '0.9rem', lineHeight: '1.5', color: '#64748b'}}>Receive actionable advice to improve your resume instantly.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 1. THE DASHBOARD VIEW */}
       {currentView === 'dashboard' && (
-        <div style={{display: 'flex', gap: '30px', padding: '40px 50px', flex: 1}}>
+        <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
+          {/* Header with Back Button */}
+          <div style={{display: 'flex', justifyContent: 'flex-end', padding: '20px 50px', background: '#ffffff', borderBottom: '1px solid #e2e8f0'}}>
+            <button onClick={() => setCurrentView('home')} className="btn-ghost" style={{fontSize: '16px', fontWeight: '600'}}>← Back to Home</button>
+          </div>
           
-          {/* Left Column */}
-          <div className="glass-card">
+          {/* Main Content */}
+          <div style={{display: 'flex', gap: '30px', padding: '40px 50px', flex: 1}}>
+            
+            {/* Left Column */}
+            <div className="glass-card">
             <div style={{marginBottom: '35px', textAlign: 'center'}}>
               <h2 style={{margin: 0, fontSize: '24px', fontWeight: '700', color: '#1e293b'}}>Select Resume for Analysis</h2>
               <p style={{margin: '8px 0 0 0', fontSize: '15px', color: '#64748b'}}>Choose a sample resume below and define the target role.</p>
@@ -101,29 +144,58 @@ const App = () => {
                 <h3 style={{margin: 0, fontSize: '16px', fontWeight: '600', color: '#1e293b'}}>Initialize AI</h3>
               </div>
               <button onClick={handleUpload} disabled={loading} className={loading ? "btn-disabled" : "btn-generate"}>
-                {loading ? "✨ Analyzing Data..." : "Scan your Resume"}
+                {loading ? " Analyzing Data..." : "Scan your Resume"}
               </button>
             </div>
           </div>
 
           {/* Right Column */}
           <div className="glass-card">
-            {result ? (
-              <>
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid #e2e8f0', paddingBottom: '20px'}}>
-                  <div>
-                    <h2 style={{margin: 0, fontSize: '24px', fontWeight: '700', color: '#1e293b'}}>📊 Analysis Complete</h2>
-                    <p style={{margin: '8px 0 0 0', fontSize: '15px', color: '#64748b'}}>Here is your personalized roadmap</p>
-                  </div>
-                  <button style={{background: 'transparent', color: '#2563eb', border: '1px solid #2563eb', padding: '8px 16px', borderRadius: '20px', cursor: 'pointer', fontWeight: '600', fontSize: '14px'}}>Download PDF</button>
-                </div>
-                <div style={{color: '#334155', fontSize: '15px', lineHeight: '1.8', whiteSpace: 'pre-wrap', overflowY: 'auto', paddingRight: '10px'}}>{result}</div>
-              </>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center', padding: '0 40px'}}>
+              <div style={{fontSize: '48px', color: '#cbd5e1', marginBottom: '20px', background: '#f8fafc', padding: '20px', borderRadius: '20px'}}>📄</div>
+              <h3 style={{fontSize: '20px', fontWeight: '600', color: '#1e293b', margin: '0 0 10px 0'}}>Ready to see the magic?</h3>
+              <p style={{color: '#64748b', fontSize: '15px', lineHeight: '1.6'}}>Select a sample resume and target JD to see our AI-powered analysis in action.</p>
+            </div>
+          </div>
+
+        </div>
+      )}  {/* end dashboard view */}
+
+      {/* RESULTS VIEW */}
+      {currentView === 'results' && result && (
+        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, padding: '60px 20px'}}>
+          <div style={{width: '100%', maxWidth: '800px'}}>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px'}}>
+              <h1 style={{margin: 0, fontSize: '32px', fontWeight: '800', color: '#1e293b'}}>Analysis Results</h1>
+              <button onClick={() => setCurrentView('dashboard')} className="btn-ghost">Back to Dashboard</button>
+            </div>
+            
+            {result.error ? (
+              <div className="glass-card" style={{textAlign: 'center', padding: '40px'}}>
+                <div style={{fontSize: '48px', marginBottom: '20px'}}>❌</div>
+                <h2 style={{margin: '0 0 10px 0', fontSize: '24px', fontWeight: '700', color: '#1e293b'}}>Analysis Failed</h2>
+                <p style={{color: '#64748b', fontSize: '16px'}}>{result.error}</p>
+              </div>
             ) : (
-              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center', padding: '0 40px'}}>
-                <div style={{fontSize: '48px', color: '#cbd5e1', marginBottom: '20px', background: '#f8fafc', padding: '20px', borderRadius: '20px'}}>📄</div>
-                <h3 style={{fontSize: '20px', fontWeight: '600', color: '#1e293b', margin: '0 0 10px 0'}}>Ready to see the magic?</h3>
-                <p style={{color: '#64748b', fontSize: '15px', lineHeight: '1.6'}}>Select a sample resume and target JD to see our AI-powered analysis in action.</p>
+              <div>
+                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '40px'}}>
+                  <div className="glass-card" style={{textAlign: 'center', padding: '40px'}}>
+                    <div style={{fontSize: '48px', marginBottom: '20px'}}>📊</div>
+                    <h2 style={{margin: '0 0 10px 0', fontSize: '24px', fontWeight: '700', color: '#1e293b'}}>Match Score</h2>
+                    <div style={{fontSize: '48px', fontWeight: '800', color: '#6366f1'}}>{result.match_score}/100</div>
+                  </div>
+                  
+                  <div className="glass-card" style={{padding: '40px'}}>
+                    <div style={{fontSize: '48px', marginBottom: '20px'}}>🔍</div>
+                    <h2 style={{margin: '0 0 20px 0', fontSize: '24px', fontWeight: '700', color: '#1e293b'}}>Skill Scan</h2>
+                    <div style={{color: '#334155', fontSize: '16px', lineHeight: '1.6'}}>{result.skill_scan}</div>
+                  </div>
+                </div>
+                
+                <div className="glass-card" style={{padding: '40px'}}>
+                  <h2 style={{margin: '0 0 20px 0', fontSize: '24px', fontWeight: '700', color: '#1e293b'}}>Improvement Tips</h2>
+                  <div style={{color: '#334155', fontSize: '16px', lineHeight: '1.6'}}>{result.tips}</div>
+                </div>
               </div>
             )}
           </div>
@@ -135,10 +207,10 @@ const App = () => {
         <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '60px 20px'}}>
           
           <div style={{width: '100%', maxWidth: '420px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px'}}>
-            <h1 onClick={() => setCurrentView('dashboard')} style={{margin: 0, fontSize: '28px', fontWeight: '800', letterSpacing: '-0.5px', color: '#0f172a', cursor: 'pointer'}}>
+            <h1 onClick={() => setCurrentView('home')} style={{margin: 0, fontSize: '28px', fontWeight: '800', letterSpacing: '-0.5px', color: '#0f172a', cursor: 'pointer'}}>
               CareerOrbit <span style={{color: '#6366f1'}}>AI</span>
             </h1>
-            <button onClick={() => setCurrentView('dashboard')} className="btn-icon" title="Back to Home">
+            <button onClick={() => setCurrentView('home')} className="btn-icon" title="Back to Home">
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10"/>
                 <path d="M12 8l-4 4 4 4M16 12H8"/>
@@ -170,10 +242,10 @@ const App = () => {
         <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '60px 20px'}}>
           
           <div style={{width: '100%', maxWidth: '420px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px'}}>
-            <h1 onClick={() => setCurrentView('dashboard')} style={{margin: 0, fontSize: '28px', fontWeight: '800', letterSpacing: '-0.5px', color: '#0f172a', cursor: 'pointer'}}>
+            <h1 onClick={() => setCurrentView('home')} style={{margin: 0, fontSize: '28px', fontWeight: '800', letterSpacing: '-0.5px', color: '#0f172a', cursor: 'pointer'}}>
               CareerOrbit <span style={{color: '#6366f1'}}>AI</span>
             </h1>
-            <button onClick={() => setCurrentView('dashboard')} className="btn-icon" title="Back to Home">
+            <button onClick={() => setCurrentView('home')} className="btn-icon" title="Back to Home">
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10"/>
                 <path d="M12 8l-4 4 4 4M16 12H8"/>
@@ -196,6 +268,38 @@ const App = () => {
               <button type="submit" className="btn-generate">Create account</button>
             </form>
             <p style={{marginTop: '30px', textAlign: 'center', fontSize: '14px', color: '#64748b'}}>Already have an account? <span style={{color: '#2563eb', fontWeight: '600', cursor: 'pointer'}} onClick={() => setCurrentView('login')}>Log in</span></p>
+          </div>
+        </div>
+      )}
+
+      {/* --- ABOUT SECTION (home only, above footer) --- */}
+      {currentView === 'home' && (
+        <div style={{padding: '80px 50px', background: '#ffffff', borderTop: '1px solid #e2e8f0', marginTop: '40px'}}>
+          <div style={{maxWidth: '1200px', margin: '0 auto', textAlign: 'center'}}>
+            <h2 style={{fontSize: '2.5rem', fontWeight: '700', margin: '0 0 20px 0', color: '#1e293b'}}>About CareerOrbit AI</h2>
+            <p style={{fontSize: '1.1rem', lineHeight: '1.7', color: '#64748b', margin: '0 0 40px 0', maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
+              CareerOrbit AI is revolutionizing the job search process by leveraging cutting-edge artificial intelligence to provide instant, accurate resume analysis. Our platform helps professionals understand their strengths, identify skill gaps, and optimize their resumes for better ATS compatibility and job matching scores.
+            </p>
+            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px', marginTop: '60px'}}>
+              <div style={{textAlign: 'left'}}>
+                <h3 style={{fontSize: '1.5rem', fontWeight: '600', color: '#1e293b', margin: '0 0 15px 0'}}>Our Mission</h3>
+                <p style={{color: '#64748b', lineHeight: '1.6', margin: 0}}>
+                  To empower job seekers with AI-driven insights that bridge the gap between talent and opportunity, making career advancement accessible to everyone.
+                </p>
+              </div>
+              <div style={{textAlign: 'left'}}>
+                <h3 style={{fontSize: '1.5rem', fontWeight: '600', color: '#1e293b', margin: '0 0 15px 0'}}>How It Works</h3>
+                <p style={{color: '#64748b', lineHeight: '1.6', margin: 0}}>
+                  Upload your resume, paste the job description, and let our AI analyze compatibility, suggest improvements, and provide personalized recommendations.
+                </p>
+              </div>
+              <div style={{textAlign: 'left'}}>
+                <h3 style={{fontSize: '1.5rem', fontWeight: '600', color: '#1e293b', margin: '0 0 15px 0'}}>Why Choose Us</h3>
+                <p style={{color: '#64748b', lineHeight: '1.6', margin: 0}}>
+                  Fast, accurate, and user-friendly. Our AI is trained on thousands of successful resumes and job postings to deliver reliable insights.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}

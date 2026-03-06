@@ -24,7 +24,14 @@ def run_ai(text, jd, mode):
     if mode == "interview":
         prompt = f"Based on this resume: {text} and JD: {jd}, generate 5 tough technical interview questions targeting their specific skills."
     else:
-        prompt = f"Analyze this resume: {text} against this JD: {jd}. Provide a match score out of 100, highlight missing hard skills, and give 3 actionable tips for improvement."
+        prompt = f"""Analyze this resume: {text} against this JD: {jd}. 
+        Provide the response in the following JSON format:
+        {{
+            "match_score": "a number out of 100",
+            "skill_scan": "list of missing hard skills",
+            "tips": "3 actionable tips for improvement"
+        }}
+        Do not include any other text, just the JSON."""
 
     try:
         # Implementing the new unified GenAI Client syntax
@@ -35,7 +42,7 @@ def run_ai(text, jd, mode):
         )
         return response.text
     except Exception as e:
-        return f"AI Error: {e}"
+        return f'{{"error": "AI Error: {e}"}}'
 
 if __name__ == "__main__":
     # Handle inputs from Node.js bridge

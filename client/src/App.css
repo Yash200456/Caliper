@@ -109,6 +109,12 @@ h1, h2, h3, h4 {
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
 }
 
+/* Hover Lift for Home Cards */
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+}
+
 /* File Drop Zone Animation */
 .file-drop-zone {
   border: 2px dashed #cbd5e1;
