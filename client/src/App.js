@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import html2pdf from 'html2pdf.js';
-import './App.css'; 
+import './App.css';
+
+// new landing components
+import Landing from './components/Landing';
 
 const App = () => {
   const [currentView, setCurrentView] = useState('home');
@@ -184,39 +187,9 @@ const App = () => {
         </div>
       </nav>
 
-      {/* --- 0. THE HOME VIEW --- */}
+      {/* --- 0. THE LANDING PAGE (homepage) --- */}
       {currentView === 'home' && (
-        <div style={{flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '60px 20px', background: '#ffffff', color: '#0f172a', textAlign: 'center'}}>
-          <div style={{maxWidth: '800px', marginBottom: '60px'}}>
-            <h1 style={{fontSize: '4rem', fontWeight: '800', margin: '0 0 20px 0', lineHeight: '1.1', color: '#1e293b'}}>
-              Stop Guessing. <br/><span style={{color: '#6366f1'}}>Start Beating the ATS.</span>
-            </h1>
-            <p style={{fontSize: '1.25rem', lineHeight: '1.6', margin: '0 0 40px 0', color: '#64748b'}}>
-              75% of resumes are rejected by automated filters before a human ever sees them. CareerOrbit AI reverse-engineers the job description to give you the exact keywords needed to get an interview.
-            </p>
-            <button onClick={() => setCurrentView('dashboard')} className="btn-pill" style={{fontSize: '1.1rem', padding: '16px 32px'}}>
-              🚀 Scan your resume
-            </button>
-          </div>
-          
-          <div style={{display: 'flex', gap: '40px', flexWrap: 'wrap', justifyContent: 'center'}}>
-            <div style={{background: '#f8fafc', borderRadius: '20px', padding: '30px', maxWidth: '250px', border: '1px solid #e2e8f0'}}>
-              <div style={{fontSize: '3rem', marginBottom: '15px'}}>📊</div>
-              <h3 style={{margin: '0 0 10px 0', fontSize: '1.25rem', fontWeight: '600', color: '#1e293b'}}>ATS Scoring</h3>
-              <p style={{margin: 0, fontSize: '0.9rem', lineHeight: '1.5', color: '#64748b'}}>Check how well your resume passes Applicant Tracking Systems.</p>
-            </div>
-            <div style={{background: '#f8fafc', borderRadius: '20px', padding: '30px', maxWidth: '250px', border: '1px solid #e2e8f0'}}>
-              <div style={{fontSize: '3rem', marginBottom: '15px'}}>🎯</div>
-              <h3 style={{margin: '0 0 10px 0', fontSize: '1.25rem', fontWeight: '600', color: '#1e293b'}}>Job Matching</h3>
-              <p style={{margin: 0, fontSize: '0.9rem', lineHeight: '1.5', color: '#64748b'}}>See how closely your skills align with job requirements.</p>
-            </div>
-            <div style={{background: '#f8fafc', borderRadius: '20px', padding: '30px', maxWidth: '250px', border: '1px solid #e2e8f0'}}>
-              <div style={{fontSize: '3rem', marginBottom: '15px'}}>💡</div>
-              <h3 style={{margin: '0 0 10px 0', fontSize: '1.25rem', fontWeight: '600', color: '#1e293b'}}>Smart Tips</h3>
-              <p style={{margin: 0, fontSize: '0.9rem', lineHeight: '1.5', color: '#64748b'}}>Receive actionable advice to improve your resume instantly.</p>
-            </div>
-          </div>
-        </div>
+        <Landing onScan={() => setCurrentView('dashboard')} />
       )}
 
       {/* --- 1. THE DASHBOARD VIEW --- */}

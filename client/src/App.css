@@ -1,3 +1,8 @@
+/* Tailwind base / components / utilities */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Import Professional SaaS Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap');
 
@@ -8,6 +13,9 @@ body, html {
   width: 100%;
   min-height: 100vh;
   background-color: #f8fafc;
+  /* subtle mesh/grid pattern using SVG data URI */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%239CA3AF' stroke-opacity='0.05' stroke-width='1'%3E%3Cpath d='M0 0 L120 0 L120 120 L0 120 Z'/%3E%3Cpath d='M60 0 L60 120 M0 60 L120 60'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 120px 120px;
   font-family: 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   color: #0f172a;
@@ -113,6 +121,92 @@ h1, h2, h3, h4 {
 .hover-lift:hover {
   transform: translateY(-4px);
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Homepage Specific Styles --- */
+.home-hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 20px;
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%),
+              radial-gradient(circle at top left, rgba(99,102,241,0.1), transparent 70%),
+              radial-gradient(circle at bottom right, rgba(168,85,247,0.1), transparent 70%);
+  color: #0f172a;
+  text-align: center;
+}
+
+/* small pulsing effect for hero button */
+@keyframes pulse {
+  0% { box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4); }
+  50% { box-shadow: 0 6px 25px rgba(99, 102, 241, 0.6); }
+  100% { box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4); }
+}
+
+.hero-button {
+  font-size: 1.1rem;
+  padding: 18px 36px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: pulse 3s infinite;
+}
+
+.hero-heading {
+  font-size: 4rem;
+  font-weight: 800;
+  margin: 0 0 20px 0;
+  line-height: 1.1;
+  color: #1e293b;
+}
+
+.hero-heading span {
+  color: #6366f1;
+}
+
+.hero-subtext {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  margin: 0 0 40px 0;
+  color: #64748b;
+  max-width: 800px;
+}
+
+.hero-button {
+  font-size: 1.1rem;
+  padding: 18px 36px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hero-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+
+.feature-section {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 60px;
+}
+
+.feature-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 250px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
 }
 
 /* File Drop Zone Animation */

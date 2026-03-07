@@ -29,7 +29,9 @@ This document describes the full workflow for installing, developing, and using 
 ## 🚀 High‑Level Workflow
 
 1. **Setup environment variables**
-   - Copy `.env.example` (if present) or create `.env` with `GEMINI_API_KEY` and any DB credentials.
+   - Copy the provided `.env.example` to `.env` and fill in real values (API keys, database URL, etc.).
+   - If your repo doesn’t already have `.env.example`, create `.env` yourself and define at least `GEMINI_API_KEY` and `DATABASE_URL`.
+   - Never commit the actual `.env` file; add it to `.gitignore` (see project tips below).
 2. **Install dependencies**
    - Python: install required packages (`PyMuPDF`, `openai`/`google-genai`, `python-dotenv`) via pip.
    - Node/server: run `npm install` in `server/` and `client/` directories.
@@ -102,7 +104,8 @@ This document describes the full workflow for installing, developing, and using 
 
 ## 📌 Tips & Best Practices
 
-- Keep the `.env` file out of source control.
+- Keep the `.env` file out of source control; commit the companion `.env.example` instead.
+- Make sure the `DATABASE_URL` in your `.env` is valid and reachable from your network (DNS/host lookup issues cause `ENOTFOUND`).
 - Validate PDF files before sending to the engine to avoid malformed input.
 - Use proper error handling in server routes; the engine returns JSON error messages that can be forwarded.
 - Log requests in `server/app.js` for debugging.
