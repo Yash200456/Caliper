@@ -68,3 +68,13 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+---
+
+## New Features
+
+This version adds a **My Scans history dashboard** backed by a PostgreSQL database. Users can now sign up/log in, analyze resumes with a job description, and have the results saved to their account. Saved scans show up in the "My Scans" page where they can be viewed, labeled, or deleted. The backend servers full CRUD endpoints (`/api/scans`) and persists data in the `scans` table.
+
+Additionally, the results page now offers a **one-click cover letter generator**. After a scan, authenticated users can request a polished three‑paragraph cover letter tailored to the job description. The generated text appears in an editable textarea for easy copying.
+
+A **Download PDF** button lets you capture the match score, skill scan, and improvement tips in a clean report. The file is generated client‑side using `html2pdf.js`.

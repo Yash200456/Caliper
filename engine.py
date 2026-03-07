@@ -60,14 +60,46 @@ def run_ai(text, jd):
     except Exception as e:
         return json.dumps({"error": f"AI Error: {e}"})
 
+
+def run_cover(text, jd):
+    model_id = "gemini-2.5-flash"
+    prompt = f"""
+    You are a helpful AI that writes professional cover letters.
+
+    Write a highly professional, 3-paragraph cover letter for this job using the experiences listed in this resume. Use the job description to tailor the letter and make it sound polished.
+
+    Resume Text:
+    {text}
+
+    Job Description:
+    {jd}
+    """
+
+    try:
+        client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+        response = client.models.generate_content(
+            model=model_id,
+            contents=prompt
+        )
+        return response.text.strip()
+    except Exception as e:
+        return f"Error generating cover letter: {e}"
+
 if __name__ == "__main__":
-    file_path = sys.argv[1] if len(sys.argv) > 1 else "resume.pdf"
-    job_desc = sys.argv[2] if len(sys.argv) > 2 else "Software Engineer"
-
-    resume_text = extract_text_from_pdf(file_path)
-
-    if "error" in resume_text.lower():
-        print(resume_text)
+    # support two modes: normal analysis (provide file path + jd) or cover letter generation
+    if len(sys.argv) > 1 and sys.argv[1] == 'cover':
+        # read resume text from stdin
+        job_desc = sys.argv[2] if len(sys.argv) > 2 else "Software Engineer"
+        resume_text = sys.stdin.read()
+        print(run_cover(resume_text, job_desc))
     else:
-        # Print the final JSON string so Node.js can catch it
-        print(run_ai(resume_text, job_desc))
+        file_path = sys.argv[1] if len(sys.argv) > 1 else "resume.pdf"
+        job_desc = sys.argv[2] if len(sys.argv) > 2 else "Software Engineer"
+
+        resume_text = extract_text_from_pdf(file_path)
+
+        if "error" in resume_text.lower():
+            print(resume_text)
+        else:
+            # Print the final JSON string so Node.js can catch it
+            print(run_ai(resume_text, job_desc))
