@@ -1,19 +1,45 @@
 import React from 'react';
-import Navbar from './Navbar';
 import Hero from './Hero';
 import FeatureCard from './FeatureCard';
 import { Cpu, TrendingUp, Lightbulb } from 'lucide-react';
 
 const Landing = ({ onScan }) => {
-  const handleWatchDemo = () => {
-    // placeholder: maybe scroll to video section
-    window.alert('Demo coming soon!');
-  };
-
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50">
-      <Navbar onLogin={() => window.alert('Please log in')} onGetStarted={onScan} />
-      <Hero onPrimary={onScan} onSecondary={handleWatchDemo} />
+    <div className="flex flex-col min-h-screen bg-slate-50 scroll-smooth">
+      {/* header with anchors - overlay on top of hero */}
+      <header className="absolute top-0 left-0 w-full bg-gray-900/80 backdrop-blur-md shadow-md z-50 py-4">
+        <nav className="max-w-6xl mx-auto flex justify-center space-x-8">
+          <a href="#hero" className="text-white hover:text-purple-300 transition font-semibold drop-shadow">
+            Home
+          </a>
+          <a href="#about" className="text-white hover:text-purple-300 transition font-semibold drop-shadow">
+            About
+          </a>
+          <a href="#features" className="text-white hover:text-purple-300 transition font-semibold drop-shadow">
+            Features
+          </a>
+        </nav>
+      </header>
+      <Hero onPrimary={onScan} />
+      {/* about section */}
+      <section id="about" className="py-20 px-8 bg-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold text-slate-900 mb-4">About CareerOrbit AI</h2>
+          <p className="text-lg text-slate-700 mb-8">
+            CareerOrbit AI was created to bridge the gap between talented
+            professionals and the automated systems that screen their resumes.
+            By leveraging advanced AI to interpret job descriptions and resume
+            content, we give you the insights recruiters see and the direction
+            you need to improve.
+          </p>
+          <button
+            onClick={onScan}
+            className="inline-flex px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-full shadow-lg transition"
+          >
+            🚀 Scan Your Resume
+          </button>
+        </div>
+      </section>
       <section id="features" className="py-20 px-8 bg-slate-50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center text-slate-900 mb-12">Features</h2>
