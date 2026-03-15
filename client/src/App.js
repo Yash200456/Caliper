@@ -146,6 +146,7 @@ const App = () => {
     <div className="page-container">
       
       {/* --- THE NAVBAR (Now with Global Back Arrow) --- */}
+      {currentView !== 'home' && (
       <nav className="navbar">
         <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
           
@@ -186,6 +187,7 @@ const App = () => {
           )}
         </div>
       </nav>
+      )}
 
       {/* --- 0. THE LANDING PAGE (homepage) --- */}
       {currentView === 'home' && (
@@ -448,39 +450,8 @@ const App = () => {
         </div>
       )}
 
-      {/* --- 5. THE ABOUT SECTION (Only on Home) --- */}
-      {currentView === 'home' && (
-        <div style={{padding: '80px 50px', background: '#ffffff', borderTop: '1px solid #e2e8f0', marginTop: '40px'}}>
-          <div style={{maxWidth: '1200px', margin: '0 auto', textAlign: 'center'}}>
-            <h2 style={{fontSize: '2.5rem', fontWeight: '700', margin: '0 0 20px 0', color: '#1e293b'}}>About CareerOrbit AI</h2>
-            <p style={{fontSize: '1.1rem', lineHeight: '1.7', color: '#64748b', margin: '0 0 40px 0', maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
-              CareerOrbit AI is revolutionizing the job search process by leveraging cutting-edge artificial intelligence to provide instant, accurate resume analysis. Our platform helps professionals understand their strengths, identify skill gaps, and optimize their resumes for better ATS compatibility and job matching scores.
-            </p>
-            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px', marginTop: '60px'}}>
-              <div style={{textAlign: 'left'}}>
-                <h3 style={{fontSize: '1.5rem', fontWeight: '600', color: '#1e293b', margin: '0 0 15px 0'}}>Our Mission</h3>
-                <p style={{color: '#64748b', lineHeight: '1.6', margin: 0}}>
-                  To empower job seekers with AI-driven insights that bridge the gap between talent and opportunity, making career advancement accessible to everyone.
-                </p>
-              </div>
-              <div style={{textAlign: 'left'}}>
-                <h3 style={{fontSize: '1.5rem', fontWeight: '600', color: '#1e293b', margin: '0 0 15px 0'}}>How It Works</h3>
-                <p style={{color: '#64748b', lineHeight: '1.6', margin: 0}}>
-                  Upload your resume, paste the job description, and let our AI analyze compatibility, suggest improvements, and provide personalized recommendations.
-                </p>
-              </div>
-              <div style={{textAlign: 'left'}}>
-                <h3 style={{fontSize: '1.5rem', fontWeight: '600', color: '#1e293b', margin: '0 0 15px 0'}}>Why Choose Us</h3>
-                <p style={{color: '#64748b', lineHeight: '1.6', margin: 0}}>
-                  Fast, accurate, and user-friendly. Our AI is trained on thousands of successful resumes and job postings to deliver reliable insights.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* --- MEGA DARK FOOTER --- */}
+      {currentView !== 'home' && (
       <footer className="mega-footer">
         <div style={{display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #1e293b', paddingBottom: '40px', marginBottom: '30px', flexWrap: 'wrap', gap: '40px'}}>
           <div style={{maxWidth: '300px'}}>
@@ -517,6 +488,7 @@ const App = () => {
           Made by Yashwanth Gowda
         </div>
       </footer>
+      )}
 
     </div>
   );
