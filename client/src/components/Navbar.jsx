@@ -27,6 +27,27 @@ const Navbar = ({
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
 
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (!element) return;
+
+    const offset = 112;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+
+    setMenuOpen(false);
+  };
+
+  const handleNavLinkClick = (event, sectionId) => {
+    event.preventDefault();
+    scrollToSection(sectionId);
+  };
+
   const initials = useMemo(() => {
     if (!userEmail) return 'U';
     return userEmail.trim().charAt(0).toUpperCase();
@@ -82,10 +103,18 @@ const Navbar = ({
       <div className="text-2xl font-extrabold text-slate-900">Caliper</div>
 
       <div className="hidden gap-8 md:flex">
-        <a href="#features" className="text-slate-800 transition hover:text-purple-600">
+        <a
+          href="#features"
+          onClick={(event) => handleNavLinkClick(event, 'features')}
+          className="text-slate-800 transition hover:text-purple-600"
+        >
           Features
         </a>
-        <a href="#pricing" className="text-slate-800 transition hover:text-purple-600">
+        <a
+          href="#pricing"
+          onClick={(event) => handleNavLinkClick(event, 'pricing')}
+          className="text-slate-800 transition hover:text-purple-600"
+        >
           Pricing
         </a>
       </div>
@@ -192,10 +221,18 @@ const Navbar = ({
             className="absolute left-0 right-0 top-full border-t border-slate-200 bg-white/95 px-8 py-5 backdrop-blur-md md:hidden"
           >
             <div className="flex flex-col gap-3">
-              <a href="#features" onClick={closeMobile} className="rounded-lg px-3 py-2 text-slate-700 transition hover:bg-slate-50">
+              <a
+                href="#features"
+                onClick={(event) => handleNavLinkClick(event, 'features')}
+                className="rounded-lg px-3 py-2 text-slate-700 transition hover:bg-slate-50"
+              >
                 Features
               </a>
-              <a href="#pricing" onClick={closeMobile} className="rounded-lg px-3 py-2 text-slate-700 transition hover:bg-slate-50">
+              <a
+                href="#pricing"
+                onClick={(event) => handleNavLinkClick(event, 'pricing')}
+                className="rounded-lg px-3 py-2 text-slate-700 transition hover:bg-slate-50"
+              >
                 Pricing
               </a>
 
