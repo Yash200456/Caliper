@@ -337,7 +337,7 @@ const Landing = ({ onScan }) => {
           .pulse-cta { animation: pulseCta 2.8s ease-in-out infinite; }
           .mobile-menu-open { animation: slideInRight 0.22s ease-out; }
           .hero-gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background: linear-gradient(135deg, #7e22ce 0%, #2563eb 55%, #6d28d9 100%);
             background-size: 200% 200%;
             animation: heroGradientMove 16s ease-in-out infinite;
           }
@@ -445,7 +445,7 @@ const Landing = ({ onScan }) => {
       <motion.section
         id="top"
         ref={heroRef}
-        className="relative overflow-hidden px-5 pb-24 pt-28 sm:px-8 sm:pb-32 sm:pt-36"
+        className="relative overflow-hidden px-4 pb-20 pt-32 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 36 }}
         animate={heroInView ? { opacity: 1, y: 0 } : {}}
         transition={{ ...baseTransition, delay: 0.5 }}
@@ -502,7 +502,7 @@ const Landing = ({ onScan }) => {
       <motion.section
         id="features"
         ref={featuresRef}
-        className="relative scroll-mt-28 overflow-hidden bg-white px-5 py-24 sm:px-8"
+        className="relative scroll-mt-24 overflow-hidden bg-white px-4 pt-32 pb-20 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 28 }}
         animate={featuresInView ? { opacity: 1, y: 0 } : {}}
         transition={baseTransition}
@@ -629,7 +629,7 @@ const Landing = ({ onScan }) => {
       <motion.section
         id="demo"
         ref={demoRef}
-        className="relative scroll-mt-28 overflow-hidden bg-white px-5 py-24 sm:px-8"
+        className="relative scroll-mt-24 overflow-hidden bg-white px-4 pt-32 pb-20 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 24 }}
         animate={demoInView ? { opacity: 1, y: 0 } : {}}
         transition={baseTransition}
@@ -740,7 +740,7 @@ const Landing = ({ onScan }) => {
       <motion.section
         id="products"
         ref={productsRef}
-        className="scroll-mt-28 bg-[#F9FAFB] px-5 py-24 sm:px-8"
+        className="scroll-mt-24 bg-gray-50 px-4 pt-32 pb-20 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 24 }}
         animate={productsInView ? { opacity: 1, y: 0 } : {}}
         transition={baseTransition}
@@ -809,7 +809,7 @@ const Landing = ({ onScan }) => {
       <motion.section
         id="pricing"
         ref={pricingRef}
-        className="scroll-mt-28 bg-gradient-to-br from-white via-blue-50/40 to-purple-50/30 px-5 py-24 sm:px-8"
+        className="scroll-mt-24 bg-white px-4 pt-32 pb-20 sm:px-6 lg:px-8"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={pricingInView ? { opacity: 1, scale: 1 } : {}}
         transition={baseTransition}
@@ -902,7 +902,7 @@ const Landing = ({ onScan }) => {
 
       <motion.section
         ref={testimonialsRef}
-        className="scroll-mt-28 bg-[#F9FAFB] px-5 py-24 sm:px-8"
+        className="scroll-mt-24 bg-gray-50 px-4 pt-32 pb-20 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 24 }}
         animate={testimonialsInView ? { opacity: 1, y: 0 } : {}}
         transition={baseTransition}
@@ -955,7 +955,7 @@ const Landing = ({ onScan }) => {
       <motion.section
         id="about"
         ref={aboutRef}
-        className="scroll-mt-28 bg-[#F9FAFB] px-5 py-24 sm:px-8"
+        className="scroll-mt-24 bg-gray-50 px-4 pt-32 pb-20 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 24 }}
         animate={aboutInView ? { opacity: 1, y: 0 } : {}}
         transition={baseTransition}
@@ -1021,7 +1021,7 @@ const Landing = ({ onScan }) => {
       <motion.section
         id="resources"
         ref={resourcesRef}
-        className="scroll-mt-28 bg-white px-5 py-24 sm:px-8"
+        className="scroll-mt-28 bg-white px-4 py-20 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 24 }}
         animate={resourcesInView ? { opacity: 1, y: 0 } : {}}
         transition={baseTransition}
@@ -1082,12 +1082,12 @@ const Landing = ({ onScan }) => {
       <motion.section
         id="signin"
         ref={ctaRef}
-        className="scroll-mt-28 relative overflow-hidden px-5 py-24 text-white sm:px-8"
+        className="scroll-mt-24 relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 px-4 pt-32 pb-20 text-white sm:px-6 lg:px-8"
         initial={{ opacity: 0, x: -40 }}
         animate={ctaInView ? { opacity: 1, x: 0 } : {}}
         transition={baseTransition}
       >
-        <div className="animated-bg absolute inset-0 bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900" />
+        <div className="animated-bg absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600" />
         <div className="grid-bg pointer-events-none absolute inset-0 opacity-10" />
         <div className="relative mx-auto w-full max-w-4xl rounded-2xl border border-white/10 bg-white/5 p-10 text-center backdrop-blur-sm md:p-16">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-blue-200">

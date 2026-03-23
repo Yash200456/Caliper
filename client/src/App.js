@@ -560,7 +560,7 @@ const App = () => {
 
       {/* --- 2. THE RESULTS VIEW --- */}
       {currentView === 'results' && result && (
-        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, padding: '60px 20px'}}>
+        <div className="min-h-screen bg-gray-50" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, padding: '60px 20px'}}>
           <div style={{width: '100%', maxWidth: '800px'}} ref={resultRef}>
             
             <div style={{display: 'flex', alignItems: 'center', marginBottom: '40px'}}>
@@ -664,7 +664,7 @@ const App = () => {
 
       {/* --- HISTORY VIEW --- */}
       {currentView === 'history' && (
-        <div style={{padding: '40px 20px'}}>
+        <div className="min-h-screen bg-gray-50" style={{padding: '40px 20px'}}>
           <h2 style={{fontSize: '28px', fontWeight: '700', marginBottom: '30px'}}>My Scan History</h2>
           {scans.length === 0 ? (
             <p style={{color: '#64748b'}}>No scans yet. Upload a resume to get started.</p>
@@ -708,7 +708,7 @@ const App = () => {
 
       {/* --- 3. THE LOGIN VIEW --- */}
       {currentView === 'login' && (
-        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '60px 20px'}}>
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '60px 20px'}}>
           <div className="glass-card" style={{width: '100%', maxWidth: '420px', flex: 'none', padding: '40px'}}>
             <h2 style={{margin: '0 0 30px 0', fontSize: '24px', fontWeight: '700', textAlign: 'center', color: '#1e293b'}}>Welcome back.</h2>
             <form onSubmit={handleAuth} style={{display: 'flex', flexDirection: 'column'}}>
@@ -730,7 +730,7 @@ const App = () => {
 
       {/* --- 4. THE SIGNUP VIEW --- */}
       {currentView === 'signup' && (
-        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '60px 20px'}}>
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '60px 20px'}}>
           <div className="glass-card" style={{width: '100%', maxWidth: '420px', flex: 'none', padding: '40px'}}>
             <h2 style={{margin: '0 0 30px 0', fontSize: '24px', fontWeight: '700', textAlign: 'center', color: '#1e293b'}}>Sign up for Caliper</h2>
             <form onSubmit={handleAuth} style={{display: 'flex', flexDirection: 'column'}}>
