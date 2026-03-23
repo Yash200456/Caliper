@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, useInView } from 'framer-motion';
 import {
   ArrowRight,
   BarChart3,
@@ -126,6 +127,46 @@ const testimonials = [
   }
 ];
 
+const aboutStats = [
+  { icon: TrendingUp, value: 10000, suffix: '+', label: 'Resumes Analyzed' },
+  { icon: Trophy, value: 85, suffix: '%', label: 'Avg Score Improvement' },
+  { icon: Users, value: 92, suffix: '%', label: 'Callback Rate' }
+];
+
+const CountUpValue = ({ value, suffix, start }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!start) {
+      setCount(0);
+      return;
+    }
+
+    let raf;
+    let startTs;
+
+    const step = (ts) => {
+      if (!startTs) startTs = ts;
+      const progress = Math.min((ts - startTs) / 1400, 1);
+      setCount(Math.floor(value * progress));
+
+      if (progress < 1) {
+        raf = window.requestAnimationFrame(step);
+      }
+    };
+
+    raf = window.requestAnimationFrame(step);
+    return () => window.cancelAnimationFrame(raf);
+  }, [start, value]);
+
+  return (
+    <>
+      {count.toLocaleString()}
+      {suffix}
+    </>
+  );
+};
+
 const Landing = ({ onScan }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [hasShadow, setHasShadow] = useState(false);
@@ -135,6 +176,22 @@ const Landing = ({ onScan }) => {
   const [ctaState, setCtaState] = useState('idle');
   const [pricingAnnual, setPricingAnnual] = useState(false);
   const [showBackTop, setShowBackTop] = useState(false);
+
+  const heroRef = useRef(null);
+  const featuresRef = useRef(null);
+  const productsRef = useRef(null);
+  const pricingRef = useRef(null);
+  const aboutRef = useRef(null);
+  const ctaRef = useRef(null);
+
+  const heroInView = useInView(heroRef, { once: true, amount: 0.2 });
+  const featuresInView = useInView(featuresRef, { once: true, amount: 0.2 });
+  const productsInView = useInView(productsRef, { once: true, amount: 0.2 });
+  const pricingInView = useInView(pricingRef, { once: true, amount: 0.2 });
+  const aboutInView = useInView(aboutRef, { once: true, amount: 0.2 });
+  const ctaInView = useInView(ctaRef, { once: true, amount: 0.2 });
+
+  const baseTransition = { duration: 0.6, ease: 'easeOut' };
 
   useEffect(() => {
     const onScroll = () => {
@@ -175,24 +232,6 @@ const Landing = ({ onScan }) => {
       setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
     }, 5000);
     return () => clearInterval(ticker);
-  }, []);
-
-  useEffect(() => {
-    const revealTargets = document.querySelectorAll('[data-reveal]');
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-revealed');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
-
-    revealTargets.forEach((item) => observer.observe(item));
-    return () => observer.disconnect();
   }, []);
 
   const handlePrimaryCta = () => {
@@ -252,8 +291,6 @@ const Landing = ({ onScan }) => {
           .animated-bg { background-size: 200% 200%; animation: bgShift 10s ease infinite; }
           .pulse-cta { animation: pulseCta 2.8s ease-in-out infinite; }
           .mobile-menu-open { animation: slideInRight 0.22s ease-out; }
-          .reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s ease, transform .7s ease; }
-          .reveal.is-revealed { opacity: 1; transform: translateY(0); }
           .nav-link-line::after {
             content: ''; display: block; height: 2px;
             background: #2563EB; transform: scaleX(0);
@@ -345,9 +382,13 @@ const Landing = ({ onScan }) => {
         )}
       </header>
 
-      <section
+      <motion.section
         id="top"
+        ref={heroRef}
         className="relative overflow-hidden px-5 pb-24 pt-28 sm:px-8 sm:pb-32 sm:pt-36"
+        initial={{ opacity: 0, y: 36 }}
+        animate={heroInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ ...baseTransition, delay: 0.5 }}
       >
         {/* Animated gradient bg */}
         <div className="animated-bg pointer-events-none absolute inset-0 bg-gradient-to-br from-white via-blue-50 to-indigo-50" />
@@ -403,9 +444,16 @@ const Landing = ({ onScan }) => {
             </p>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section id="features" className="relative scroll-mt-28 overflow-hidden bg-white px-5 py-24 sm:px-8" data-reveal>
+      <motion.section
+        id="features"
+        ref={featuresRef}
+        className="relative scroll-mt-28 overflow-hidden bg-white px-5 py-24 sm:px-8"
+        initial={{ opacity: 0, y: 28 }}
+        animate={featuresInView ? { opacity: 1, y: 0 } : {}}
+        transition={baseTransition}
+      >
         {/* Decorative SVG blobs */}
         <svg className="pointer-events-none absolute -left-32 top-0 h-96 w-96 opacity-[0.18]" viewBox="0 0 400 400" fill="none"><ellipse cx="200" cy="200" rx="200" ry="160" fill="#BFDBFE"/></svg>
         <svg className="pointer-events-none absolute -right-32 bottom-0 h-96 w-96 opacity-[0.18]" viewBox="0 0 400 400" fill="none"><ellipse cx="200" cy="200" rx="180" ry="200" fill="#E9D5FF"/></svg>
@@ -523,9 +571,9 @@ const Landing = ({ onScan }) => {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section id="products" className="scroll-mt-28 bg-[#F9FAFB] px-5 py-24 sm:px-8" data-reveal>
+      <section id="products" ref={productsRef} className="scroll-mt-28 bg-[#F9FAFB] px-5 py-24 sm:px-8">
         <div className="mx-auto w-full max-w-7xl">
           <p className="text-center text-sm font-bold uppercase tracking-widest text-blue-600">Process</p>
           <h2 className="mt-3 text-center font-['Inter','Poppins',sans-serif] text-4xl font-extrabold tracking-tight text-slate-900 md:text-5xl">
@@ -555,12 +603,15 @@ const Landing = ({ onScan }) => {
                 title: 'Get Instant Feedback',
                 body: 'Receive match score, suggestions, and a practical optimization roadmap immediately.'
               }
-            ].map((step) => {
+            ].map((step, index) => {
               const Icon = step.icon;
               return (
-                <div
+                <motion.div
                   key={step.number}
                   className="step-card group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 shadow-sm"
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={productsInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ ...baseTransition, delay: index * 0.1 }}
                 >
                   {/* Top blue accent border */}
                   <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-blue-500 to-purple-500" />
@@ -577,14 +628,21 @@ const Landing = ({ onScan }) => {
 
                   <h3 className="text-xl font-bold tracking-tight text-slate-900">{step.title}</h3>
                   <p className="mt-3 text-base leading-relaxed text-slate-600">{step.body}</p>
-                </div>
+                </motion.div>
               );
             })}
           </div>
         </div>
       </section>
 
-      <section id="pricing" className="scroll-mt-28 bg-gradient-to-br from-white via-blue-50/40 to-purple-50/30 px-5 py-24 sm:px-8" data-reveal>
+      <motion.section
+        id="pricing"
+        ref={pricingRef}
+        className="scroll-mt-28 bg-gradient-to-br from-white via-blue-50/40 to-purple-50/30 px-5 py-24 sm:px-8"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={pricingInView ? { opacity: 1, scale: 1 } : {}}
+        transition={baseTransition}
+      >
         <div className="mx-auto w-full max-w-7xl">
           <p className="text-center text-sm font-bold uppercase tracking-widest text-blue-600">Pricing</p>
           <h2 className="mt-3 text-center font-['Inter','Poppins',sans-serif] text-4xl font-extrabold tracking-tight text-slate-900 md:text-5xl">
@@ -663,9 +721,9 @@ const Landing = ({ onScan }) => {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section id="about" className="scroll-mt-28 bg-[#F9FAFB] px-5 py-24 sm:px-8" data-reveal>
+      <section id="about" ref={aboutRef} className="scroll-mt-28 bg-[#F9FAFB] px-5 py-24 sm:px-8">
         <div className="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-2 lg:gap-16">
           <div>
             <p className="text-sm font-bold uppercase tracking-widest text-blue-600">About Caliper</p>
@@ -676,14 +734,12 @@ const Landing = ({ onScan }) => {
               Our mission is to help job seekers move from guesswork to clarity. Caliper combines AI analysis with practical guidance so your resume communicates the right story to recruiters and ATS systems.
             </p>
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-              {[
-                { icon: TrendingUp, value: '10,000+', label: 'Resumes Analyzed' },
-                { icon: Trophy,     value: '85%',     label: 'Avg Score Improvement' },
-                { icon: Users,      value: '92%',     label: 'Callback Rate' }
-              ].map(({ icon: Icon, value, label }) => (
+              {aboutStats.map(({ icon: Icon, value, suffix, label }) => (
                 <div key={label} className="rounded-xl border border-slate-200 bg-white p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
                   <Icon className="mx-auto mb-2 h-6 w-6 text-[#2563EB]" />
-                  <p className="text-3xl font-extrabold text-[#2563EB]">{value}</p>
+                  <p className="text-3xl font-extrabold text-[#2563EB]">
+                    <CountUpValue value={value} suffix={suffix} start={aboutInView} />
+                  </p>
                   <p className="mt-1 text-xs font-semibold text-slate-500">{label}</p>
                 </div>
               ))}
@@ -780,7 +836,14 @@ const Landing = ({ onScan }) => {
         </div>
       </section>
 
-      <section id="signin" className="scroll-mt-28 relative overflow-hidden px-5 py-24 text-white sm:px-8" data-reveal>
+      <motion.section
+        id="signin"
+        ref={ctaRef}
+        className="scroll-mt-28 relative overflow-hidden px-5 py-24 text-white sm:px-8"
+        initial={{ opacity: 0, x: -40 }}
+        animate={ctaInView ? { opacity: 1, x: 0 } : {}}
+        transition={baseTransition}
+      >
         <div className="animated-bg absolute inset-0 bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900" />
         <div className="grid-bg pointer-events-none absolute inset-0 opacity-10" />
         <div className="relative mx-auto w-full max-w-4xl rounded-2xl border border-white/10 bg-white/5 p-10 text-center backdrop-blur-sm md:p-16">
@@ -812,7 +875,7 @@ const Landing = ({ onScan }) => {
             <span className="inline-flex items-center gap-1 rounded-full border border-white/20 px-3 py-1.5"><GraduationCap className="h-3.5 w-3.5" /> No Credit Card Required</span>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       <footer className="bg-gradient-to-b from-gray-900 to-gray-800 px-5 pb-8 pt-16 text-slate-300 sm:px-8">
         <div className="mx-auto grid w-full max-w-7xl gap-10 sm:grid-cols-2 lg:grid-cols-4">
