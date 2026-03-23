@@ -127,6 +127,33 @@ const testimonials = [
   }
 ];
 
+const testimonialsShowcase = [
+  {
+    name: 'Sarah Johnson',
+    title: 'Software Engineer at Google',
+    company: 'Google',
+    initials: 'SJ',
+    quote:
+      'Caliper helped me identify exactly what was missing in my resume. I went from 2% callback rate to 65% in just 2 weeks!'
+  },
+  {
+    name: 'Michael Chen',
+    title: 'Product Manager at Amazon',
+    company: 'Amazon',
+    initials: 'MC',
+    quote:
+      'The AI-powered insights were spot on. I updated my resume based on Caliper\'s suggestions and landed 3 interviews in the first week.'
+  },
+  {
+    name: 'Emily Rodriguez',
+    title: 'Data Analyst at Goldman Sachs',
+    company: 'Goldman Sachs',
+    initials: 'ER',
+    quote:
+      'As a career changer, I had no idea how to optimize my resume for ATS. Caliper made it so easy - got my dream job in fintech!'
+  }
+];
+
 const aboutStats = [
   { icon: TrendingUp, value: 10000, suffix: '+', label: 'Resumes Analyzed' },
   { icon: Trophy, value: 85, suffix: '%', label: 'Avg Score Improvement' },
@@ -176,6 +203,7 @@ const Landing = ({ onScan }) => {
   const [ctaState, setCtaState] = useState('idle');
   const [pricingAnnual, setPricingAnnual] = useState(false);
   const [showBackTop, setShowBackTop] = useState(false);
+  const [typedHeadline, setTypedHeadline] = useState('');
 
   const heroRef = useRef(null);
   const featuresRef = useRef(null);
@@ -234,6 +262,22 @@ const Landing = ({ onScan }) => {
     return () => clearInterval(ticker);
   }, []);
 
+  useEffect(() => {
+    const headlineTarget = 'More Interviews';
+    let idx = 0;
+
+    const typer = window.setInterval(() => {
+      idx += 1;
+      setTypedHeadline(headlineTarget.slice(0, idx));
+
+      if (idx >= headlineTarget.length) {
+        window.clearInterval(typer);
+      }
+    }, 85);
+
+    return () => window.clearInterval(typer);
+  }, []);
+
   const handlePrimaryCta = () => {
     if (ctaState !== 'idle') return;
 
@@ -278,19 +322,47 @@ const Landing = ({ onScan }) => {
             0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
           }
+          @keyframes heroGradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
           @keyframes pulseCta {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.35); }
-            50% { box-shadow: 0 0 0 14px rgba(37, 99, 235, 0); }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
           }
           @keyframes slideInRight {
             from { opacity: 0; transform: translateX(24px); }
             to   { opacity: 1; transform: translateX(0); }
+          }
+          @keyframes blinkCaret {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
           }
           .float-shape { animation: floatDrift 8s ease-in-out infinite; }
           .float-shape-slow { animation: floatDrift 11s ease-in-out infinite; }
           .animated-bg { background-size: 200% 200%; animation: bgShift 10s ease infinite; }
           .pulse-cta { animation: pulseCta 2.8s ease-in-out infinite; }
           .mobile-menu-open { animation: slideInRight 0.22s ease-out; }
+          .hero-gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 200% 200%;
+            animation: heroGradientMove 16s ease-in-out infinite;
+          }
+          .hero-particles {
+            background-image: radial-gradient(circle, rgba(255,255,255,0.38) 1px, transparent 1px);
+            background-size: 22px 22px;
+          }
+          .hero-glow-text {
+            color: #f8fbff;
+            text-shadow: 0 0 14px rgba(96, 165, 250, 0.55), 0 0 28px rgba(167, 139, 250, 0.45);
+          }
+          .typing-caret {
+            display: inline-block;
+            margin-left: 2px;
+            color: rgba(255, 255, 255, 0.92);
+            animation: blinkCaret 1s step-end infinite;
+          }
           .nav-link-line::after {
             content: ''; display: block; height: 2px;
             background: #2563EB; transform: scaleX(0);
@@ -390,31 +462,31 @@ const Landing = ({ onScan }) => {
         animate={heroInView ? { opacity: 1, y: 0 } : {}}
         transition={{ ...baseTransition, delay: 0.5 }}
       >
-        {/* Animated gradient bg */}
-        <div className="animated-bg pointer-events-none absolute inset-0 bg-gradient-to-br from-white via-blue-50 to-indigo-50" />
-        {/* Dot pattern overlay */}
-        <div className="dots-bg pointer-events-none absolute inset-0 opacity-40" />
+        <div className="hero-gradient-bg pointer-events-none absolute inset-0 z-0" />
+        <div className="hero-particles pointer-events-none absolute inset-0 z-0 opacity-20" />
 
-        <div className="float-shape absolute left-10 top-24 h-28 w-28 rounded-full bg-blue-200/40 blur-2xl" />
-        <div className="float-shape-slow absolute right-16 top-32 h-40 w-40 rounded-2xl bg-purple-200/30 blur-2xl" />
-        <div className="float-shape absolute bottom-20 left-[25%] h-16 w-16 rounded-full bg-indigo-200/40 blur-xl" />
-        <div className="float-shape-slow absolute bottom-32 right-[20%] h-24 w-24 rounded-xl bg-pink-200/30 blur-xl" />
+        <div className="float-shape absolute left-8 top-20 z-0 h-28 w-28 rounded-full bg-blue-200/35 blur-2xl" />
+        <div className="float-shape-slow absolute right-16 top-24 z-0 h-36 w-36 rounded-3xl bg-purple-200/30 blur-2xl" />
+        <div className="float-shape absolute bottom-20 left-[22%] z-0 h-16 w-16 rounded-full bg-cyan-200/35 blur-xl" />
+        <div className="float-shape-slow absolute bottom-28 right-[20%] z-0 h-24 w-24 rotate-12 rounded-xl bg-pink-200/35 blur-xl" />
+        <div className="float-shape absolute right-[36%] top-44 z-0 h-12 w-12 rotate-45 rounded-md bg-white/30 blur-lg" />
 
-        <div className="relative mx-auto w-full max-w-7xl">
-          <div className="max-w-4xl">
-            <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/80 px-4 py-2 text-sm font-semibold text-blue-700 shadow-sm backdrop-blur-sm">
+        <div className="relative z-10 mx-auto w-full max-w-7xl">
+          <div className="max-w-4xl rounded-3xl border border-white/20 bg-white/10 p-8 shadow-[0_24px_80px_rgba(30,41,59,0.25)] backdrop-blur-lg sm:p-10 md:p-12">
+            <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/20 px-4 py-2 text-sm font-semibold text-white shadow-sm backdrop-blur-sm">
               <Flame className="h-4 w-4 text-orange-500" />
               AI-Powered Resume Intelligence
             </p>
 
-            <h1 className="font-['Inter','Poppins',sans-serif] text-5xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-7xl">
+            <h1 className="font-['Inter','Poppins',sans-serif] text-5xl font-extrabold leading-tight tracking-tight text-white md:text-7xl">
               Optimize Your Resume to Land{' '}
-              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
-                More Interviews
+              <span className="hero-glow-text inline-block min-h-[1.2em] min-w-[10ch]">
+                {typedHeadline}
+                <span className="typing-caret">|</span>
               </span>
             </h1>
 
-            <p className="mt-7 max-w-2xl text-lg leading-relaxed text-slate-600">
+            <p className="mt-7 max-w-2xl text-lg leading-relaxed text-blue-50/95">
               Caliper AI analyzes your resume against job descriptions using advanced AI to give you an instant match score and actionable feedback.
             </p>
 
@@ -433,13 +505,13 @@ const Landing = ({ onScan }) => {
                   ctaLabel
                 )}
               </button>
-              <button className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl border-2 border-slate-300 bg-white/80 px-8 text-base font-semibold text-slate-700 backdrop-blur-sm transition-all duration-300 hover:border-blue-400 hover:text-blue-700 sm:w-auto">
+              <button className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl border-2 border-white/50 bg-white/15 px-8 text-base font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-white/70 hover:bg-white/20 sm:w-auto">
                 <Play className="h-4 w-4 fill-current" />
                 Watch Demo
               </button>
             </div>
 
-            <p className="mt-5 text-sm font-medium text-slate-500">
+            <p className="mt-5 text-sm font-medium text-blue-100/90">
               ✔ No CC Required &nbsp;&bull;&nbsp; ✔ 2 Min Setup &nbsp;&bull;&nbsp; ✔ Free Forever
             </p>
           </div>
@@ -722,6 +794,52 @@ const Landing = ({ onScan }) => {
           </div>
         </div>
       </motion.section>
+
+      <section className="scroll-mt-28 bg-[#F9FAFB] px-5 py-24 sm:px-8">
+        <div className="mx-auto w-full max-w-7xl">
+          <p className="text-center text-sm font-bold uppercase tracking-widest text-blue-600">Success Stories</p>
+          <h2 className="mt-3 text-center font-['Inter','Poppins',sans-serif] text-4xl font-extrabold tracking-tight text-slate-900 md:text-5xl">
+            Loved by Job Seekers Worldwide
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-center text-lg leading-relaxed text-slate-600">
+            See how Caliper helped professionals land their dream jobs
+          </p>
+
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {testimonialsShowcase.map((item) => (
+              <article
+                key={item.name}
+                className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+              >
+                <div className="mb-4 text-4xl leading-none text-blue-200">“</div>
+                <p className="min-h-[120px] text-base leading-relaxed text-slate-700">{item.quote}</p>
+
+                <div className="mt-5 flex items-center gap-1">
+                  {Array.from({ length: 5 }).map((_, idx) => (
+                    <Star key={`${item.name}-${idx}`} className="h-4 w-4 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+
+                <div className="mt-6 flex items-center justify-between gap-3 border-t border-slate-100 pt-5">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-sm font-bold text-white shadow-sm">
+                      {item.initials}
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">{item.name}</p>
+                      <p className="text-xs text-slate-500">{item.title}</p>
+                    </div>
+                  </div>
+
+                  <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600">
+                    {item.company}
+                  </span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section id="about" ref={aboutRef} className="scroll-mt-28 bg-[#F9FAFB] px-5 py-24 sm:px-8">
         <div className="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-2 lg:gap-16">
