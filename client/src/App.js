@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import html2pdf from 'html2pdf.js';
+import { motion } from 'framer-motion';
+import { CheckCircle2, FileText, Info, Lightbulb, Sparkles, Upload, X } from 'lucide-react';
 import './App.css';
 
 // new landing components
@@ -25,6 +27,9 @@ const App = () => {
 
   const [cover, setCover] = useState('');
   const [coverLoading, setCoverLoading] = useState(false);
+  const [isDraggingFile, setIsDraggingFile] = useState(false);
+  const [uploadAnnouncement, setUploadAnnouncement] = useState('');
+  const [uploadTimestamp, setUploadTimestamp] = useState(null);
 
   const resultRef = React.useRef(null);
 
@@ -142,6 +147,61 @@ const App = () => {
     setCurrentView('home');
   };
 
+  const handleFileSelect = (selectedFile) => {
+    if (!selectedFile) return;
+    setFile(selectedFile);
+    setUploadTimestamp(new Date());
+    setUploadAnnouncement(`Selected file ${selectedFile.name}`);
+  };
+
+  const handleFileRemove = () => {
+    if (!file) return;
+    setUploadAnnouncement(`Removed file ${file.name}`);
+    setFile(null);
+    setUploadTimestamp(null);
+  };
+
+  const handleFileDrop = (event) => {
+    event.preventDefault();
+    setIsDraggingFile(false);
+    const droppedFile = event.dataTransfer?.files?.[0];
+    handleFileSelect(droppedFile);
+  };
+
+  const completedScans = scans.length;
+  const successRate = completedScans
+    ? Math.min(
+        100,
+        Math.round(scans.reduce((sum, scan) => sum + (scan?.result?.match_score || 0), 0) / completedScans)
+      )
+    : 0;
+  const canAnalyze = Boolean(file && jd.trim()) && !loading;
+  const jdLength = jd.length;
+  const jdTooShort = jdLength > 0 && jdLength < 100;
+  const fileSizeLabel = file ? `${(file.size / 1024 / 1024).toFixed(2)} MB` : '';
+  const fileExt = file?.name?.split('.').pop()?.toLowerCase() || '';
+  const fileTypeLabel = fileExt === 'pdf' ? 'PDF' : fileExt === 'docx' || fileExt === 'doc' ? 'DOCX' : 'FILE';
+  const sampleJD = `We are hiring a Frontend Engineer with strong React and JavaScript experience.\n\nResponsibilities:\n- Build reusable UI components and improve application performance\n- Collaborate with design and backend teams to deliver features\n- Write clean, testable, and maintainable code\n\nRequirements:\n- 2+ years of React experience\n- Strong knowledge of HTML, CSS, JavaScript, and REST APIs\n- Experience with Git and modern frontend tooling\n- Excellent communication and problem-solving skills`;
+
+  const currentStep = loading ? 3 : jd.trim() ? 3 : file ? 2 : 1;
+  const stepItems = [
+    { id: 1, label: 'Upload' },
+    { id: 2, label: 'Paste JD' },
+    { id: 3, label: 'Analyze' }
+  ];
+
+  React.useEffect(() => {
+    const onKeyDown = (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter' && currentView === 'dashboard' && canAnalyze) {
+        event.preventDefault();
+        handleUpload();
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [currentView, canAnalyze, handleUpload]);
+
   return (
     <div className="page-container">
       
@@ -196,65 +256,305 @@ const App = () => {
 
       {/* --- 1. THE DASHBOARD VIEW --- */}
       {currentView === 'dashboard' && (
-        <div style={{display: 'flex', gap: '30px', padding: '40px 50px', flex: 1}}>
-          
-          {/* Left Column */}
-          <div className="glass-card">
-            <div style={{marginBottom: '35px', textAlign: 'center'}}>
-              <h2 style={{margin: 0, fontSize: '24px', fontWeight: '700', color: '#1e293b'}}>Select Resume for Analysis</h2>
-              <p style={{margin: '8px 0 0 0', fontSize: '15px', color: '#64748b'}}>Choose a sample resume below and define the target role.</p>
-              {!token && (
-                <p style={{margin: '10px 0 0', color: '#dc2626', fontSize: '14px'}}>Log in to save your scans and access history.</p>
-              )}
-            </div>
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 px-4 py-8 sm:px-6 lg:px-8">
+          <div className="mx-auto w-full max-w-7xl">
+            {!token && (
+              <div className="mb-8 flex flex-wrap items-center gap-2 rounded-lg border-l-4 border-yellow-400 bg-yellow-50 px-4 py-3 text-sm text-yellow-900">
+                <Info className="h-4 w-4 text-yellow-700" aria-hidden="true" />
+                <span>Log in to save your scans and access history.</span>
+                <button
+                  onClick={() => setCurrentView('login')}
+                  className="font-semibold text-blue-600 underline-offset-2 transition hover:underline"
+                >
+                  Log In
+                </button>
+              </div>
+            )}
 
-            <div style={{marginBottom: '25px', paddingBottom: '25px'}}>
-              <div style={{display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '15px'}}>
-                <div style={{background: '#f1f5f9', color: '#64748b', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: '700'}}>1</div>
-                <h3 style={{margin: 0, fontSize: '16px', fontWeight: '600', color: '#1e293b'}}>Upload Credentials</h3>
-              </div>
-              <div className="file-drop-zone">
-                <div style={{fontSize: '24px', color: '#94a3b8', marginBottom: '10px', border: '1px solid #cbd5e1', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>↑</div>
-                <h4 style={{margin: '0 0 5px 0', fontSize: '16px', fontWeight: '600', color: '#0f172a'}}>Click to upload your own resume</h4>
-                <p style={{margin: '0 0 15px 0', fontSize: '13px', color: '#64748b'}}>PDF or DOCX (max 5MB)</p>
-                <input type="file" accept=".pdf" onChange={(e) => setFile(e.target.files[0])} style={{display: 'none'}} id="file-upload" />
-                <label htmlFor="file-upload" className="file-input-label">Browse Files</label>
-                {file && <p style={{marginTop: '10px', color: '#6366f1', fontWeight: '600'}}>{file.name}</p>}
-              </div>
-            </div>
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }} className="mb-12">
+              <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Hi, {userEmail || 'there'} 👋</h1>
+              <p className="mt-2 text-base text-gray-600">Let&apos;s optimize your resume for your dream job</p>
+            </motion.div>
 
-            <div style={{marginBottom: '25px', paddingBottom: '25px'}}>
-              <div style={{display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '15px'}}>
-                <div style={{background: '#f1f5f9', color: '#64748b', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: '700'}}>2</div>
-                <h3 style={{margin: 0, fontSize: '16px', fontWeight: '600', color: '#1e293b'}}>Define Target Role</h3>
-              </div>
-              <textarea 
-                className="custom-textarea"
-                placeholder="Paste the technical requirements, skills, and role details here..." 
-                value={jd} onChange={(e) => setJd(e.target.value)} 
-              />
-            </div>
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+              <motion.div
+                className="lg:col-span-2"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: 0.05 }}
+              >
+                <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-xl sm:p-8">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="mb-8"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      {stepItems.map((step, index) => {
+                        const completed = currentStep > step.id;
+                        const active = currentStep === step.id;
 
-            <div>
-              <div style={{display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '15px'}}>
-                <div style={{background: '#f1f5f9', color: '#64748b', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '14px', fontWeight: '700'}}>3</div>
-                <h3 style={{margin: 0, fontSize: '16px', fontWeight: '600', color: '#1e293b'}}>Initialize AI</h3>
-              </div>
-              <button onClick={handleUpload} disabled={loading} className={loading ? "btn-disabled" : "btn-generate"}>
-                {loading ? "✨ Analyzing Data..." : "🚀 Scan your Resume"}
-              </button>
+                        return (
+                          <React.Fragment key={step.id}>
+                            <div className="flex items-center gap-2">
+                              <span
+                                className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
+                                  completed
+                                    ? 'bg-green-500 text-white'
+                                    : active
+                                      ? 'bg-blue-600 text-white'
+                                      : 'bg-gray-200 text-gray-500'
+                                }`}
+                              >
+                                {completed ? <CheckCircle2 className="h-4 w-4" /> : step.id}
+                              </span>
+                              <span className={`text-sm font-medium ${active ? 'text-blue-700' : 'text-gray-500'}`}>{step.label}</span>
+                            </div>
+                            {index < stepItems.length - 1 && (
+                              <div className={`h-1 flex-1 rounded-full ${currentStep > step.id ? 'bg-green-400' : 'bg-gray-200'}`} />
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
+                    className="mb-8"
+                  >
+                    <div className="mb-4 flex items-center gap-3">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">1</span>
+                      <div>
+                        <h2 className="text-lg font-semibold text-gray-900">Upload Your Resume</h2>
+                        <p className="text-sm text-gray-500">PDF or DOCX format, max 5MB</p>
+                      </div>
+                    </div>
+
+                    <div
+                      onDragOver={(event) => {
+                        event.preventDefault();
+                        setIsDraggingFile(true);
+                      }}
+                      onDragLeave={() => setIsDraggingFile(false)}
+                      onDrop={handleFileDrop}
+                      className={`rounded-xl border-2 border-dashed p-12 text-center transition-all duration-300 ${
+                        isDraggingFile
+                          ? 'animate-bounce border-blue-500 bg-blue-100/50'
+                          : 'border-blue-300 bg-blue-50/50 hover:border-blue-500 hover:bg-blue-100/50'
+                      }`}
+                    >
+                      <Upload className="mx-auto h-12 w-12 text-blue-600" aria-hidden="true" />
+                      <p className="mt-4 text-base font-medium text-gray-800">
+                        Drag &amp; drop your resume here or click to browse
+                      </p>
+                      <p className="mt-1 text-sm text-gray-500">Supported formats: PDF, DOCX</p>
+
+                      <div className="mt-5">
+                        <input
+                          id="dashboard-file-upload"
+                          type="file"
+                          accept=".pdf,.doc,.docx"
+                          onChange={(event) => handleFileSelect(event.target.files?.[0])}
+                          className="hidden"
+                          aria-label="Upload resume file"
+                        />
+                        <label
+                          htmlFor="dashboard-file-upload"
+                          className="inline-flex cursor-pointer items-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                        >
+                          Browse Files
+                        </label>
+                      </div>
+
+                      {file && (
+                        <div className="mx-auto mt-5 max-w-2xl rounded-xl border border-blue-100 bg-white p-4 text-sm text-gray-700 shadow-sm">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-start gap-3">
+                              <span className={`mt-0.5 rounded-lg px-2 py-1 text-xs font-bold ${fileTypeLabel === 'PDF' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>
+                                {fileTypeLabel}
+                              </span>
+                              <FileText className="h-5 w-5 text-blue-600" aria-hidden="true" />
+                              <div>
+                                <p className="max-w-[220px] truncate font-semibold text-gray-900 sm:max-w-[340px]">{file.name}</p>
+                                <p className="mt-1 text-xs text-gray-500">
+                                  {fileSizeLabel} • Uploaded {uploadTimestamp ? uploadTimestamp.toLocaleString() : 'just now'}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => document.getElementById('dashboard-file-upload')?.click()}
+                                className="rounded-lg border border-gray-200 px-2 py-1 text-xs font-medium text-gray-600 transition hover:border-blue-300 hover:text-blue-600"
+                              >
+                                Re-upload
+                              </button>
+                              <button
+                                type="button"
+                                onClick={handleFileRemove}
+                                aria-label="Remove selected file"
+                                className="rounded p-1 text-gray-500 transition hover:bg-red-50 hover:text-red-600"
+                              >
+                                <X className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      <p className="sr-only" aria-live="polite">{uploadAnnouncement}</p>
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.2 }}
+                    className="mb-6"
+                  >
+                    <div className="mb-4 flex items-center gap-3">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">2</span>
+                      <h2 className="text-lg font-semibold text-gray-900">Paste Job Description</h2>
+                    </div>
+
+                    <label htmlFor="job-description" className="sr-only">Job Description</label>
+                    <textarea
+                      id="job-description"
+                      value={jd}
+                      onChange={(event) => setJd(event.target.value)}
+                      placeholder="Paste the job description from the posting..."
+                      className="min-h-[200px] w-full rounded-xl border-2 border-gray-200 p-4 text-base leading-relaxed text-gray-800 outline-none transition-all duration-300 placeholder:text-gray-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10"
+                    />
+
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-sm">
+                      <span className={`${jdTooShort ? 'text-orange-500' : 'text-gray-500'}`}>{jdLength} / 5000 characters</span>
+                      {jdTooShort && <span className="text-orange-500">Add more details for better analysis</span>}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setJd(sampleJD)}
+                      className="mt-3 text-sm font-semibold text-blue-600 transition hover:underline"
+                    >
+                      Use Sample Job Description
+                    </button>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.3 }}
+                  >
+                    <button
+                      onClick={handleUpload}
+                      disabled={!canAnalyze}
+                      className={`inline-flex w-full items-center justify-center gap-2 rounded-xl px-12 py-4 text-lg font-bold text-white transition-all duration-300 sm:w-auto ${
+                        canAnalyze
+                          ? 'animate-pulse bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg hover:scale-105 hover:shadow-2xl'
+                          : 'cursor-not-allowed bg-gradient-to-r from-blue-400 to-purple-400 opacity-50'
+                      }`}
+                    >
+                      {loading ? (
+                        <>
+                          <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/50 border-t-white" />
+                          Analyzing...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="h-5 w-5" />
+                          Analyze Resume
+                        </>
+                      )}
+                    </button>
+                    <p className="mt-3 text-sm text-gray-500">Press Ctrl+Enter to analyze</p>
+
+                    {loading && (
+                      <div className="mt-6 space-y-4 rounded-xl border border-gray-100 bg-gray-50 p-4">
+                        <div className="h-5 w-1/3 animate-pulse rounded bg-gray-200" />
+                        <div className="space-y-2">
+                          <div className="h-3 w-full animate-pulse rounded bg-gray-200" />
+                          <div className="h-3 w-11/12 animate-pulse rounded bg-gray-200" />
+                          <div className="h-3 w-9/12 animate-pulse rounded bg-gray-200" />
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="h-20 animate-pulse rounded-lg bg-gray-200" />
+                          <div className="h-20 animate-pulse rounded-lg bg-gray-200" />
+                        </div>
+                      </div>
+                    )}
+                  </motion.div>
+                </div>
+              </motion.div>
+
+              <motion.aside
+                className="lg:col-span-1"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: 0.15 }}
+              >
+                <div className="sticky top-8 rounded-2xl border border-gray-100 bg-white p-6 shadow-lg">
+                  <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900">
+                    <Lightbulb className="h-5 w-5 text-amber-500" />
+                    Quick Tips
+                  </h3>
+
+                  <ul className="space-y-3">
+                    {[
+                      'Use a professional resume format',
+                      'Include relevant keywords from the job description',
+                      'Quantify your achievements with numbers',
+                      'Keep it concise (1-2 pages max)',
+                      'Proofread for spelling and grammar'
+                    ].map((tip) => (
+                      <li key={tip} className="flex items-start gap-2 text-sm text-gray-600">
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 flex-shrink-0 text-[#10B981]" aria-hidden="true" />
+                        <span>{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-8 rounded-xl border border-gray-100 bg-gray-50 p-4">
+                    <p className="text-sm font-semibold text-gray-900">Your Progress</p>
+                    {completedScans === 0 ? (
+                      <div className="mt-3 rounded-lg border border-dashed border-gray-200 bg-white p-4 text-center">
+                        <Sparkles className="mx-auto h-6 w-6 text-blue-500" aria-hidden="true" />
+                        <p className="mt-2 text-sm text-gray-600">Complete your first scan to see your progress</p>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="mt-3 space-y-2 text-sm text-gray-600">
+                          <div className="flex justify-between">
+                            <span>Scans completed</span>
+                            <span className="font-semibold text-gray-900">{completedScans}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Success rate</span>
+                            <span className="font-semibold text-gray-900">{successRate}%</span>
+                          </div>
+                        </div>
+                        <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                          <div
+                            className="h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500"
+                            style={{ width: `${successRate}%` }}
+                          />
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={() => setCurrentView('history')}
+                    className="mt-6 w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 transition-all duration-300 hover:border-blue-500 hover:text-blue-600"
+                  >
+                    View Past Scans →
+                  </button>
+                </div>
+              </motion.aside>
             </div>
           </div>
-
-          {/* Right Column */}
-          <div className="glass-card">
-            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center', padding: '0 40px'}}>
-              <div style={{fontSize: '48px', color: '#cbd5e1', marginBottom: '20px', background: '#f8fafc', padding: '20px', borderRadius: '20px'}}>📄</div>
-              <h3 style={{fontSize: '20px', fontWeight: '600', color: '#1e293b', margin: '0 0 10px 0'}}>Ready to see the magic?</h3>
-              <p style={{color: '#64748b', fontSize: '15px', lineHeight: '1.6'}}>Select a sample resume and target JD to see our AI-powered analysis in action.</p>
-            </div>
-          </div>
-
         </div>
       )}
 
