@@ -56,7 +56,7 @@ const Hero = ({ onPrimary }) => {
           </span>
         </h1>
         <p className="mt-6 text-lg text-slate-700">
-          CareerOrbit AI scans your resume against any job listing, uncovers hidden
+          Caliper scans your resume against any job listing, uncovers hidden
           keywords and formatting issues, then gives you a precise match score
           — just like a real Applicant Tracking System. Spend minutes, not
           hours, getting your application seen.
@@ -111,7 +111,7 @@ const Hero = ({ onPrimary }) => {
             </div>
           </div>
           <h3 className="mt-6 text-xl font-semibold text-gray-800 text-center">
-            How CareerOrbit AI Works
+            How Caliper Works
           </h3>
           <ul className="mt-4 text-gray-700 space-y-2 list-disc list-inside text-sm">
             <li>Upload your resume and paste a job description</li>

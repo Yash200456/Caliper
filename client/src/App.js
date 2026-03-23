@@ -32,7 +32,7 @@ const App = () => {
     if (resultRef.current) {
       html2pdf().from(resultRef.current).set({
         margin:       10,
-        filename:     'careerorbit-report.pdf',
+        filename:     'caliper-report.pdf',
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2 },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -166,7 +166,7 @@ const App = () => {
 
           <div onClick={() => setCurrentView('home')} style={{cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '15px'}}>
             <h1 style={{margin: 0, fontSize: '26px', fontWeight: '800', letterSpacing: '-0.5px'}}>
-              CareerOrbit <span style={{color: '#6366f1'}}>AI</span>
+              Caliper
             </h1>
             <div style={{background: '#eff6ff', color: '#3b82f6', padding: '6px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: '600'}}>Reva ISE Edition</div>
           </div>
@@ -432,7 +432,7 @@ const App = () => {
       {currentView === 'signup' && (
         <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: 1, padding: '60px 20px'}}>
           <div className="glass-card" style={{width: '100%', maxWidth: '420px', flex: 'none', padding: '40px'}}>
-            <h2 style={{margin: '0 0 30px 0', fontSize: '24px', fontWeight: '700', textAlign: 'center', color: '#1e293b'}}>Sign up for CareerOrbit</h2>
+            <h2 style={{margin: '0 0 30px 0', fontSize: '24px', fontWeight: '700', textAlign: 'center', color: '#1e293b'}}>Sign up for Caliper</h2>
             <form onSubmit={handleAuth} style={{display: 'flex', flexDirection: 'column'}}>
               <div style={{marginBottom: '20px'}}>
                 <label style={{display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#475569'}}>Email *</label>
@@ -455,7 +455,7 @@ const App = () => {
       <footer className="mega-footer">
         <div style={{display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #1e293b', paddingBottom: '40px', marginBottom: '30px', flexWrap: 'wrap', gap: '40px'}}>
           <div style={{maxWidth: '300px'}}>
-            <h2 style={{margin: '0', fontSize: '24px', fontWeight: '800', letterSpacing: '-0.5px', color: '#ffffff'}}>CareerOrbit <span style={{color: '#a855f7'}}>AI</span></h2>
+            <h2 style={{margin: '0', fontSize: '24px', fontWeight: '800', letterSpacing: '-0.5px', color: '#ffffff'}}>Caliper</h2>
             <p style={{marginTop: '15px', fontSize: '14px', lineHeight: '1.6', color: '#cbd5e1'}}>Helping professionals optimize their job applications and land their dream careers since 2026.</p>
           </div>
           
@@ -477,7 +477,7 @@ const App = () => {
 
         <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '13px', alignItems: 'center'}}>
           <div style={{display: 'flex', gap: '20px'}}>
-            <span>© 2026 CareerOrbit AI. All rights reserved.</span>
+            <span>© 2026 Caliper. All rights reserved.</span>
           </div>
           <div style={{display: 'flex', cursor: 'pointer'}}>
             <span className="footer-link">Privacy Policy</span>

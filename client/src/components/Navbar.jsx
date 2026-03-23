@@ -79,12 +79,7 @@ const Navbar = ({
         `}
       </style>
 
-      <div className="text-2xl font-extrabold text-slate-900">
-        CareerOrbit{' '}
-        <span className="bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
-          AI
-        </span>
-      </div>
+      <div className="text-2xl font-extrabold text-slate-900">Caliper</div>
 
       <div className="hidden gap-8 md:flex">
         <a href="#features" className="text-slate-800 transition hover:text-purple-600">
@@ -100,14 +95,14 @@ const Navbar = ({
           <>
             <button
               onClick={onLogin}
-              className="inline-flex items-center gap-2 rounded-lg border-2 border-gray-300 px-6 py-2.5 font-semibold text-gray-700 transition-all duration-300 hover:scale-105 hover:border-blue-600 hover:text-blue-600"
+              className="border-2 border-gray-300 bg-transparent text-gray-700 px-6 py-2.5 rounded-lg font-semibold hover:border-blue-600 hover:text-blue-600 hover:bg-blue-50 hover:scale-105 active:scale-95 transition-all duration-300 focus:ring-4 focus:ring-blue-500/20"
             >
-              <User className="h-4 w-4" />
+              <User className="mr-2 inline-block h-4 w-4" />
               Log In
             </button>
             <button
               onClick={onGetStarted}
-              className="signup-shine inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 via-blue-700 to-purple-600 px-8 py-3 font-bold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:brightness-110 hover:shadow-2xl hover:shadow-blue-500/50"
+              className="signup-shine inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 via-blue-700 to-purple-600 px-8 py-2.5 font-bold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:brightness-110 hover:shadow-2xl hover:shadow-blue-500/50"
             >
               <Sparkles className="h-4 w-4" />
               Sign Up
@@ -136,7 +131,7 @@ const Navbar = ({
                 >
                   <div className="rounded-t-lg bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white">
                     <p className="text-xs uppercase tracking-widest text-blue-100">Signed in as</p>
-                    <p className="mt-1 break-all text-sm font-semibold">{userEmail || 'user@careerorbit.ai'}</p>
+                    <p className="mt-1 break-all text-sm font-semibold">{userEmail || 'user@caliper.ai'}</p>
                   </div>
 
                   <div className="my-2 border-t border-slate-200" />
@@ -211,9 +206,9 @@ const Navbar = ({
                       closeMobile();
                       if (onLogin) onLogin();
                     }}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-gray-300 px-6 py-2.5 font-semibold text-gray-700 transition-all duration-300 hover:scale-105 hover:border-blue-600 hover:text-blue-600"
+                    className="border-2 border-gray-300 bg-transparent text-gray-700 px-6 py-2.5 rounded-lg font-semibold hover:border-blue-600 hover:text-blue-600 hover:bg-blue-50 hover:scale-105 active:scale-95 transition-all duration-300 focus:ring-4 focus:ring-blue-500/20"
                   >
-                    <User className="h-4 w-4" />
+                    <User className="mr-2 inline-block h-4 w-4" />
                     Log In
                   </button>
                   <button
@@ -221,7 +216,7 @@ const Navbar = ({
                       closeMobile();
                       if (onGetStarted) onGetStarted();
                     }}
-                    className="signup-shine inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 via-blue-700 to-purple-600 px-8 py-3 font-bold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:brightness-110 hover:shadow-2xl hover:shadow-blue-500/50"
+                    className="signup-shine inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 via-blue-700 to-purple-600 px-8 py-2.5 font-bold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:brightness-110 hover:shadow-2xl hover:shadow-blue-500/50"
                   >
                     <Rocket className="h-4 w-4" />
                     Sign Up

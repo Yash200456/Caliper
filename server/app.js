@@ -13,7 +13,7 @@ const pool = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = 'super_secret_careerorbit_key_123'; // In production, put this in your .env file!
+const JWT_SECRET = 'super_secret_caliper_key_123'; // In production, put this in your .env file!
 
 // Middleware
 app.use(cors());
@@ -275,5 +275,5 @@ app.post('/api/cover', verifyToken, async (req, res) => {
 
 // --- START SERVER ---
 app.listen(PORT, () => {
-    console.log(`✅ CareerOrbit Server is running on http://localhost:${PORT}`);
+    console.log(`✅ Caliper Server is running on http://localhost:${PORT}`);
 });
