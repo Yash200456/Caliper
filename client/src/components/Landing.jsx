@@ -302,6 +302,10 @@ const Landing = ({ onScan }) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleDemoClick = () => {
+    window.alert('Demo video coming soon!');
+  };
+
   const ctaLabel =
     ctaState === 'loading'
       ? 'Analyzing...'
@@ -644,6 +648,96 @@ const Landing = ({ onScan }) => {
           </div>
         </div>
       </motion.section>
+
+      <section id="demo" className="relative scroll-mt-28 overflow-hidden bg-white px-5 py-24 sm:px-8">
+        <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-gradient-to-br from-blue-200/40 to-purple-200/30 blur-3xl" />
+
+        <div className="relative mx-auto w-full max-w-7xl">
+          <p className="text-center text-sm font-bold uppercase tracking-widest text-blue-600">Product Demo</p>
+          <h2 className="mt-3 text-center font-['Inter','Poppins',sans-serif] text-4xl font-extrabold tracking-tight text-slate-900 md:text-5xl">
+            See Caliper in Action
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-center text-lg leading-relaxed text-slate-600">
+            Watch how our AI analyzes your resume in seconds
+          </p>
+
+          <div className="mt-14 grid items-center gap-8 lg:grid-cols-5">
+            <div className="lg:col-span-2">
+              <h3 className="text-2xl font-bold tracking-tight text-slate-900">
+                Experience the full workflow before you upload your first resume.
+              </h3>
+              <p className="mt-4 text-base leading-relaxed text-slate-600">
+                In this quick walkthrough, you will see exactly how Caliper transforms a generic resume into a targeted, ATS-friendly version with practical, actionable guidance.
+              </p>
+
+              <ul className="mt-6 space-y-3 text-slate-700">
+                <li className="flex items-start gap-3">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#10B981]" />
+                  <span>Upload resume in seconds</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#10B981]" />
+                  <span>Instant ATS compatibility score</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#10B981]" />
+                  <span>Detailed improvement suggestions</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#10B981]" />
+                  <span>Skill gap analysis</span>
+                </li>
+              </ul>
+
+              <button
+                onClick={handlePrimaryCta}
+                className="mt-8 inline-flex h-12 items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-7 text-sm font-bold text-white shadow-md shadow-blue-300/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-blue-400/50"
+              >
+                Try It Free
+              </button>
+            </div>
+
+            <div className="lg:col-span-3">
+              <button
+                onClick={handleDemoClick}
+                aria-label="Play product demo"
+                className="group relative w-full overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 p-0 text-left shadow-[0_24px_55px_rgba(30,64,175,0.28)] transition-all duration-300 hover:shadow-[0_30px_65px_rgba(59,130,246,0.32)]"
+              >
+                <span className="absolute right-4 top-4 z-20 rounded-full border border-white/20 bg-white/15 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+                  2 min watch
+                </span>
+
+                <div className="relative h-[320px] w-full md:h-[360px]">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/0" />
+
+                  <div className="absolute left-8 top-8 w-[65%] rounded-xl border border-white/25 bg-white/80 p-5 shadow-lg backdrop-blur-sm blur-[1px]">
+                    <div className="h-3 w-28 rounded bg-slate-300" />
+                    <div className="mt-4 h-2 w-full rounded bg-slate-200" />
+                    <div className="mt-2 h-2 w-[92%] rounded bg-slate-200" />
+                    <div className="mt-2 h-2 w-[80%] rounded bg-slate-200" />
+                    <div className="mt-5 grid grid-cols-2 gap-3">
+                      <div className="h-16 rounded bg-blue-100" />
+                      <div className="h-16 rounded bg-purple-100" />
+                    </div>
+                  </div>
+
+                  <div className="absolute bottom-7 right-8 w-[45%] rounded-lg border border-white/25 bg-white/80 p-3 shadow-md backdrop-blur-sm blur-[0.6px]">
+                    <div className="h-2 w-20 rounded bg-slate-300" />
+                    <div className="mt-3 h-2 w-full rounded bg-slate-200" />
+                    <div className="mt-2 h-2 w-[88%] rounded bg-slate-200" />
+                  </div>
+
+                  <div className="absolute inset-0 z-10 flex items-center justify-center">
+                    <span className="flex h-20 w-20 items-center justify-center rounded-full border border-white/35 bg-white/20 backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
+                      <Play className="ml-1 h-8 w-8 fill-white text-white" />
+                    </span>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section id="products" ref={productsRef} className="scroll-mt-28 bg-[#F9FAFB] px-5 py-24 sm:px-8">
         <div className="mx-auto w-full max-w-7xl">
