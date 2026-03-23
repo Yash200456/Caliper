@@ -204,7 +204,6 @@ const Landing = ({ onScan }) => {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [ctaState, setCtaState] = useState('idle');
   const [pricingAnnual, setPricingAnnual] = useState(false);
-  const [typedHeadline, setTypedHeadline] = useState('');
   const [demoThumbLoaded, setDemoThumbLoaded] = useState(false);
 
   const heroRef = useRef(null);
@@ -267,22 +266,6 @@ const Landing = ({ onScan }) => {
       setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
     }, 5000);
     return () => clearInterval(ticker);
-  }, []);
-
-  useEffect(() => {
-    const headlineTarget = 'More Interviews';
-    let idx = 0;
-
-    const typer = window.setInterval(() => {
-      idx += 1;
-      setTypedHeadline(headlineTarget.slice(0, idx));
-
-      if (idx >= headlineTarget.length) {
-        window.clearInterval(typer);
-      }
-    }, 85);
-
-    return () => window.clearInterval(typer);
   }, []);
 
   const handlePrimaryCta = () => {
@@ -348,10 +331,6 @@ const Landing = ({ onScan }) => {
             from { opacity: 0; transform: translateX(24px); }
             to   { opacity: 1; transform: translateX(0); }
           }
-          @keyframes blinkCaret {
-            0%, 49% { opacity: 1; }
-            50%, 100% { opacity: 0; }
-          }
           .float-shape { animation: floatDrift 8s ease-in-out infinite; }
           .float-shape-slow { animation: floatDrift 11s ease-in-out infinite; }
           .animated-bg { background-size: 200% 200%; animation: bgShift 10s ease infinite; }
@@ -369,12 +348,6 @@ const Landing = ({ onScan }) => {
           .hero-glow-text {
             color: #f8fbff;
             text-shadow: 0 0 14px rgba(96, 165, 250, 0.55), 0 0 28px rgba(167, 139, 250, 0.45);
-          }
-          .typing-caret {
-            display: inline-block;
-            margin-left: 2px;
-            color: rgba(255, 255, 255, 0.92);
-            animation: blinkCaret 1s step-end infinite;
           }
           .nav-link-line::after {
             content: ''; display: block; height: 2px;
@@ -495,9 +468,8 @@ const Landing = ({ onScan }) => {
 
             <h1 className="font-['Inter','Poppins',sans-serif] text-5xl font-extrabold leading-tight tracking-tight text-white md:text-7xl">
               Optimize Your Resume to Land{' '}
-              <span className="hero-glow-text inline-block min-h-[1.2em] min-w-[10ch]">
-                {typedHeadline}
-                <span className="typing-caret">|</span>
+              <span className="hero-glow-text inline-block">
+                More Interviews
               </span>
             </h1>
 
@@ -867,53 +839,59 @@ const Landing = ({ onScan }) => {
             </span>
           </div>
 
-          <div className="mt-12 grid items-center gap-6 md:grid-cols-3">
+          <div className="mt-12 grid items-stretch gap-6 md:grid-cols-3">
             {/* Starter */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-              <p className="text-sm font-bold uppercase tracking-widest text-slate-500">Starter</p>
-              <p className="mt-5 text-6xl font-extrabold text-slate-900">$0</p>
-              <p className="mt-1 text-sm text-slate-500">Forever free</p>
-              <ul className="mt-7 space-y-3 text-sm text-slate-600">
-                <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />3 scans/week</li>
-                <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />ATS score</li>
-                <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Basic suggestions</li>
-              </ul>
+            <div className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+              <div className="flex-grow">
+                <p className="text-sm font-bold uppercase tracking-widest text-slate-500">Starter</p>
+                <p className="mt-5 text-6xl font-extrabold text-slate-900">$0</p>
+                <p className="mt-1 text-sm text-slate-500">Forever free</p>
+                <ul className="mt-7 space-y-3 text-sm text-slate-600">
+                  <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />3 scans/week</li>
+                  <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />ATS score</li>
+                  <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Basic suggestions</li>
+                </ul>
+              </div>
               <button className="mt-8 w-full rounded-xl border-2 border-slate-300 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-500 hover:text-blue-600">
                 Get Started Free
               </button>
             </div>
 
             {/* Pro — lifted */}
-            <div className="-mt-4 rounded-2xl border-2 border-[#2563EB] bg-white p-8 shadow-2xl shadow-blue-200/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-blue-300/60 md:-mt-6">
-              <div className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 px-3 py-1 text-xs font-bold text-white">
-                <Zap className="h-3 w-3" />
-                Most Popular
+            <div className="-mt-4 flex h-full flex-col rounded-2xl border-2 border-[#2563EB] bg-white p-8 shadow-2xl shadow-blue-200/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-blue-300/60 md:-mt-6">
+              <div className="flex-grow">
+                <div className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 px-3 py-1 text-xs font-bold text-white">
+                  <Zap className="h-3 w-3" />
+                  Most Popular
+                </div>
+                <p className="text-sm font-bold uppercase tracking-widest text-[#2563EB]">Pro</p>
+                <p className="mt-5 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-6xl font-extrabold text-transparent">
+                  ${pricingAnnual ? '15' : '19'}
+                </p>
+                <p className="mt-1 text-sm text-slate-500">per month{pricingAnnual ? ', billed annually' : ''}</p>
+                <ul className="mt-7 space-y-3 text-sm text-slate-600">
+                  <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Unlimited scans</li>
+                  <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />One-click optimize</li>
+                  <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Priority support</li>
+                </ul>
               </div>
-              <p className="text-sm font-bold uppercase tracking-widest text-[#2563EB]">Pro</p>
-              <p className="mt-5 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-6xl font-extrabold text-transparent">
-                ${pricingAnnual ? '15' : '19'}
-              </p>
-              <p className="mt-1 text-sm text-slate-500">per month{pricingAnnual ? ', billed annually' : ''}</p>
-              <ul className="mt-7 space-y-3 text-sm text-slate-600">
-                <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Unlimited scans</li>
-                <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />One-click optimize</li>
-                <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Priority support</li>
-              </ul>
               <CTAButton size="md" className="mt-8 w-full">
                 Start Pro Trial
               </CTAButton>
             </div>
 
             {/* Enterprise */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-              <p className="text-sm font-bold uppercase tracking-widest text-slate-500">Enterprise</p>
-              <p className="mt-5 text-5xl font-extrabold text-slate-900">Custom</p>
-              <p className="mt-1 text-sm text-slate-500">for teams &amp; universities</p>
-              <ul className="mt-7 space-y-3 text-sm text-slate-600">
-                <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Admin analytics</li>
-                <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Bulk onboarding</li>
-                <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Dedicated success manager</li>
-              </ul>
+            <div className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+              <div className="flex-grow">
+                <p className="text-sm font-bold uppercase tracking-widest text-slate-500">Enterprise</p>
+                <p className="mt-5 text-5xl font-extrabold text-slate-900">Custom</p>
+                <p className="mt-1 text-sm text-slate-500">for teams &amp; universities</p>
+                <ul className="mt-7 space-y-3 text-sm text-slate-600">
+                  <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Admin analytics</li>
+                  <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Bulk onboarding</li>
+                  <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Dedicated success manager</li>
+                </ul>
+              </div>
               <button className="mt-8 w-full rounded-xl border-2 border-slate-300 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-500 hover:text-blue-600">
                 Contact Sales
               </button>
