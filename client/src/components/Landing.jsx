@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import Footer from './Footer';
+import CTAButton from './CTAButton';
 import {
   ArrowRight,
   BarChart3,
@@ -12,7 +13,6 @@ import {
   Flame,
   GraduationCap,
   LineChart,
-  LoaderCircle,
   Lock,
   Menu,
   Play,
@@ -313,13 +313,6 @@ const Landing = ({ onScan }) => {
     window.alert('Demo video coming soon!');
   };
 
-  const ctaLabel =
-    ctaState === 'loading'
-      ? 'Analyzing...'
-      : ctaState === 'success'
-        ? 'Ready to Scan →'
-        : 'Scan Your Resume →';
-
   return (
     <div className="scroll-smooth bg-white text-[#1F2937]">
       <style>
@@ -376,35 +369,6 @@ const Landing = ({ onScan }) => {
           .hero-glow-text {
             color: #f8fbff;
             text-shadow: 0 0 14px rgba(96, 165, 250, 0.55), 0 0 28px rgba(167, 139, 250, 0.45);
-          }
-          .ripple-btn {
-            position: relative;
-            overflow: hidden;
-            isolation: isolate;
-          }
-          .ripple-btn::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle, rgba(255,255,255,0.38) 8%, transparent 42%);
-            transform: scale(0);
-            opacity: 0;
-            transition: transform 0.45s ease, opacity 0.45s ease;
-            pointer-events: none;
-          }
-          .ripple-btn:active::after {
-            transform: scale(3);
-            opacity: 1;
-            transition: transform 0s, opacity 0s;
-          }
-          .cta-btn {
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-          }
-          .cta-btn:hover {
-            transform: translateY(-2px);
-          }
-          .loading-spinner {
-            animation: spinLoader 0.8s linear infinite;
           }
           .typing-caret {
             display: inline-block;
@@ -469,9 +433,7 @@ const Landing = ({ onScan }) => {
           </nav>
 
           <div className="ml-auto hidden lg:block">
-            <button className="cta-btn ripple-btn rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 text-sm font-bold text-white shadow-md shadow-blue-300/30 transition-all duration-300 hover:shadow-lg hover:shadow-blue-400/40">
-              Get Started →
-            </button>
+            <CTAButton size="md">Get Started</CTAButton>
           </div>
 
           <button
@@ -501,9 +463,7 @@ const Landing = ({ onScan }) => {
                   </a>
                 );
               })}
-              <button className="cta-btn ripple-btn mt-2 w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-3 text-sm font-bold text-white">
-                Get Started →
-              </button>
+              <CTAButton size="md" className="mt-2 w-full">Get Started</CTAButton>
             </div>
           </div>
         )}
@@ -546,26 +506,15 @@ const Landing = ({ onScan }) => {
             </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
-              <button
+              <CTAButton
                 onClick={handlePrimaryCta}
-                disabled={ctaState === 'loading'}
-                className="cta-btn ripple-btn pulse-cta inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-10 text-base font-bold text-white shadow-2xl shadow-blue-400/40 transition-all duration-300 hover:shadow-blue-500/50 disabled:cursor-not-allowed disabled:opacity-80 sm:w-auto"
+                loading={ctaState === 'loading'}
+                loadingText="Analyzing..."
+                className="pulse-cta h-14 w-full sm:w-auto"
               >
-                {ctaState === 'loading' ? (
-                  <span className="inline-flex items-center gap-2">
-                    <LoaderCircle className="loading-spinner h-5 w-5" />
-                    {ctaLabel}
-                  </span>
-                ) : ctaState === 'success' ? (
-                  <span className="inline-flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5" />
-                    {ctaLabel}
-                  </span>
-                ) : (
-                  ctaLabel
-                )}
-              </button>
-              <button className="cta-btn ripple-btn inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl border-2 border-white/50 bg-white/15 px-8 text-base font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-white/70 hover:bg-white/20 sm:w-auto">
+                {ctaState === 'success' ? 'Ready to Scan' : 'Scan Your Resume'}
+              </CTAButton>
+              <button className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl border-2 border-white/50 bg-white/15 px-8 text-base font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-white/70 hover:bg-white/20 sm:w-auto">
                 <Play className="h-4 w-4 fill-current" />
                 Watch Demo
               </button>
@@ -752,14 +701,15 @@ const Landing = ({ onScan }) => {
                 </li>
               </ul>
 
-              <button
+              <CTAButton
                 onClick={handlePrimaryCta}
-                disabled={ctaState === 'loading'}
-                className="cta-btn ripple-btn mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-7 text-sm font-bold text-white shadow-md shadow-blue-300/40 transition-all duration-300 hover:shadow-blue-400/50 disabled:cursor-not-allowed disabled:opacity-80"
+                loading={ctaState === 'loading'}
+                loadingText="Signing in..."
+                size="md"
+                className="mt-8"
               >
-                {ctaState === 'loading' && <LoaderCircle className="loading-spinner h-4 w-4" />}
                 Try It Free
-              </button>
+              </CTAButton>
             </div>
 
             <div className="lg:col-span-3">
@@ -928,7 +878,7 @@ const Landing = ({ onScan }) => {
                 <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />ATS score</li>
                 <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Basic suggestions</li>
               </ul>
-              <button className="cta-btn ripple-btn mt-8 w-full rounded-xl border-2 border-slate-300 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-500 hover:text-blue-600">
+              <button className="mt-8 w-full rounded-xl border-2 border-slate-300 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-500 hover:text-blue-600">
                 Get Started Free
               </button>
             </div>
@@ -949,9 +899,9 @@ const Landing = ({ onScan }) => {
                 <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />One-click optimize</li>
                 <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Priority support</li>
               </ul>
-              <button className="cta-btn ripple-btn mt-8 w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 py-3 text-sm font-bold text-white shadow-lg shadow-blue-300/40 transition-all duration-300 hover:shadow-blue-400/50">
-                Start Pro Trial →
-              </button>
+              <CTAButton size="md" className="mt-8 w-full">
+                Start Pro Trial
+              </CTAButton>
             </div>
 
             {/* Enterprise */}
@@ -964,7 +914,7 @@ const Landing = ({ onScan }) => {
                 <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Bulk onboarding</li>
                 <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Dedicated success manager</li>
               </ul>
-              <button className="cta-btn ripple-btn mt-8 w-full rounded-xl border-2 border-slate-300 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-500 hover:text-blue-600">
+              <button className="mt-8 w-full rounded-xl border-2 border-slate-300 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-500 hover:text-blue-600">
                 Contact Sales
               </button>
             </div>
@@ -1173,21 +1123,15 @@ const Landing = ({ onScan }) => {
             Get your AI-powered match score, skill gap analysis, and one-click optimization — all free.
           </p>
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <button
+            <CTAButton
               onClick={handlePrimaryCta}
-              disabled={ctaState === 'loading'}
-              className="cta-btn ripple-btn inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-white px-12 py-5 text-lg font-bold text-[#2563EB] shadow-2xl transition-all duration-300 hover:shadow-white/20 disabled:cursor-not-allowed disabled:opacity-80 sm:w-auto"
+              loading={ctaState === 'loading'}
+              loadingText="Analyzing..."
+              className="h-14 w-full sm:w-auto"
             >
-              {ctaState === 'loading' ? (
-                <>
-                  <LoaderCircle className="loading-spinner h-5 w-5" />
-                  Analyzing...
-                </>
-              ) : (
-                'Start Free Analysis →'
-              )}
-            </button>
-            <button className="cta-btn ripple-btn inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl border-2 border-white/30 px-10 py-5 text-base font-semibold text-white transition-all duration-300 hover:border-white/60 hover:bg-white/10 sm:w-auto">
+              Start Free Analysis
+            </CTAButton>
+            <button className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl border-2 border-white/30 px-10 py-5 text-base font-semibold text-white transition-all duration-300 hover:border-white/60 hover:bg-white/10 sm:w-auto">
               <Play className="h-4 w-4 fill-current" />
               Watch Demo
             </button>
