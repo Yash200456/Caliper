@@ -1,17 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
+import Footer from './Footer';
 import {
   ArrowRight,
   BarChart3,
   Briefcase,
   CheckCircle2,
-  ChevronUp,
   ClipboardList,
   Compass,
   FileUp,
   Flame,
   GraduationCap,
   LineChart,
+  LoaderCircle,
   Lock,
   Menu,
   Play,
@@ -175,7 +176,8 @@ const CountUpValue = ({ value, suffix, start }) => {
     const step = (ts) => {
       if (!startTs) startTs = ts;
       const progress = Math.min((ts - startTs) / 1400, 1);
-      setCount(Math.floor(value * progress));
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.floor(value * eased));
 
       if (progress < 1) {
         raf = window.requestAnimationFrame(step);
@@ -202,21 +204,27 @@ const Landing = ({ onScan }) => {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [ctaState, setCtaState] = useState('idle');
   const [pricingAnnual, setPricingAnnual] = useState(false);
-  const [showBackTop, setShowBackTop] = useState(false);
   const [typedHeadline, setTypedHeadline] = useState('');
+  const [demoThumbLoaded, setDemoThumbLoaded] = useState(false);
 
   const heroRef = useRef(null);
   const featuresRef = useRef(null);
+  const demoRef = useRef(null);
   const productsRef = useRef(null);
   const pricingRef = useRef(null);
+  const testimonialsRef = useRef(null);
   const aboutRef = useRef(null);
+  const resourcesRef = useRef(null);
   const ctaRef = useRef(null);
 
   const heroInView = useInView(heroRef, { once: true, amount: 0.2 });
   const featuresInView = useInView(featuresRef, { once: true, amount: 0.2 });
+  const demoInView = useInView(demoRef, { once: true, amount: 0.2 });
   const productsInView = useInView(productsRef, { once: true, amount: 0.2 });
   const pricingInView = useInView(pricingRef, { once: true, amount: 0.2 });
+  const testimonialsInView = useInView(testimonialsRef, { once: true, amount: 0.2 });
   const aboutInView = useInView(aboutRef, { once: true, amount: 0.2 });
+  const resourcesInView = useInView(resourcesRef, { once: true, amount: 0.2 });
   const ctaInView = useInView(ctaRef, { once: true, amount: 0.2 });
 
   const baseTransition = { duration: 0.6, ease: 'easeOut' };
@@ -224,7 +232,6 @@ const Landing = ({ onScan }) => {
   useEffect(() => {
     const onScroll = () => {
       setHasShadow(window.scrollY > 10);
-      setShowBackTop(window.scrollY > 400);
     };
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
@@ -335,6 +342,15 @@ const Landing = ({ onScan }) => {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
           }
+          @keyframes spinLoader {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+          @keyframes iconBounce {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(5deg) scale(1.1); }
+            100% { transform: rotate(0deg) scale(1); }
+          }
           @keyframes slideInRight {
             from { opacity: 0; transform: translateX(24px); }
             to   { opacity: 1; transform: translateX(0); }
@@ -361,6 +377,35 @@ const Landing = ({ onScan }) => {
             color: #f8fbff;
             text-shadow: 0 0 14px rgba(96, 165, 250, 0.55), 0 0 28px rgba(167, 139, 250, 0.45);
           }
+          .ripple-btn {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+          }
+          .ripple-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(255,255,255,0.38) 8%, transparent 42%);
+            transform: scale(0);
+            opacity: 0;
+            transition: transform 0.45s ease, opacity 0.45s ease;
+            pointer-events: none;
+          }
+          .ripple-btn:active::after {
+            transform: scale(3);
+            opacity: 1;
+            transition: transform 0s, opacity 0s;
+          }
+          .cta-btn {
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+          }
+          .cta-btn:hover {
+            transform: translateY(-2px);
+          }
+          .loading-spinner {
+            animation: spinLoader 0.8s linear infinite;
+          }
           .typing-caret {
             display: inline-block;
             margin-left: 2px;
@@ -370,15 +415,20 @@ const Landing = ({ onScan }) => {
           .nav-link-line::after {
             content: ''; display: block; height: 2px;
             background: #2563EB; transform: scaleX(0);
-            transform-origin: center; transition: transform 0.25s ease;
+            transform-origin: left; transition: transform 0.35s ease;
           }
-          .nav-link-line:hover::after { transform: scaleX(1); }
+          .nav-link-line:hover::after,
+          .nav-link-line.nav-link-active::after { transform: scaleX(1); }
           .step-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
           .step-card:hover { transform: scale(1.02) translateY(-5px); box-shadow: 0 22px 44px rgba(37,99,235,0.13); }
-          .feature-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-          .feature-card:hover { transform: scale(1.03); box-shadow: 0 18px 40px rgba(37,99,235,0.11); }
+          .feature-card { transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease; }
+          .feature-card:hover { transform: scale(1.03); box-shadow: 0 18px 40px rgba(37,99,235,0.11); border-color: #93c5fd; background-color: #f8fbff; }
           .feature-icon { transition: transform 0.3s ease; }
-          .feature-card:hover .feature-icon { transform: rotate(6deg); }
+          .feature-card:hover .feature-icon,
+          .feature-pill:hover .feature-icon { animation: iconBounce 0.45s ease; transform: rotate(5deg) scale(1.1); }
+          .feature-pill { transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease, transform 0.3s ease; }
+          .lazy-fade { opacity: 0; transition: opacity 0.5s ease; }
+          .lazy-fade.is-loaded { opacity: 1; }
           .dots-bg { background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px); background-size: 28px 28px; }
           .grid-bg { background-image: linear-gradient(rgba(148,163,184,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.1) 1px, transparent 1px); background-size: 32px 32px; }
         `}
@@ -386,7 +436,7 @@ const Landing = ({ onScan }) => {
 
       <header
         className={`sticky top-0 z-50 border-b border-slate-100 bg-white/80 backdrop-blur-lg transition-all duration-300 ${
-          hasShadow ? 'shadow-[0_8px_30px_rgba(15,23,42,0.08)]' : ''
+          hasShadow ? 'shadow-lg shadow-slate-900/10' : 'shadow-sm shadow-slate-200/60'
         }`}
       >
         <div className="mx-auto flex h-20 w-full max-w-7xl items-center px-5 lg:px-8">
@@ -407,18 +457,19 @@ const Landing = ({ onScan }) => {
                   href={`#${item.target}`}
                   onClick={(event) => handleNavClick(event, item.target)}
                   className={`nav-link-line relative pb-1 text-[15px] font-medium transition-colors duration-200 ${
+                    isActive ? 'nav-link-active' : ''
+                  } ${
                     isActive ? 'text-[#2563EB]' : 'text-slate-600 hover:text-[#2563EB]'
                   }`}
                 >
                   {item.label}
-                  {isActive && <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded bg-[#2563EB]" />}
                 </a>
               );
             })}
           </nav>
 
           <div className="ml-auto hidden lg:block">
-            <button className="rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 text-sm font-bold text-white shadow-md shadow-blue-300/30 transition-all duration-300 hover:scale-[1.03] hover:shadow-lg hover:shadow-blue-400/40">
+            <button className="cta-btn ripple-btn rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 text-sm font-bold text-white shadow-md shadow-blue-300/30 transition-all duration-300 hover:shadow-lg hover:shadow-blue-400/40">
               Get Started →
             </button>
           </div>
@@ -450,7 +501,7 @@ const Landing = ({ onScan }) => {
                   </a>
                 );
               })}
-              <button className="mt-2 w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-3 text-sm font-bold text-white">
+              <button className="cta-btn ripple-btn mt-2 w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-3 text-sm font-bold text-white">
                 Get Started →
               </button>
             </div>
@@ -498,9 +549,14 @@ const Landing = ({ onScan }) => {
               <button
                 onClick={handlePrimaryCta}
                 disabled={ctaState === 'loading'}
-                className="pulse-cta inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-10 text-base font-bold text-white shadow-2xl shadow-blue-400/40 transition-all duration-300 hover:scale-[1.03] hover:shadow-blue-500/50 disabled:cursor-not-allowed disabled:opacity-80 sm:w-auto"
+                className="cta-btn ripple-btn pulse-cta inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-10 text-base font-bold text-white shadow-2xl shadow-blue-400/40 transition-all duration-300 hover:shadow-blue-500/50 disabled:cursor-not-allowed disabled:opacity-80 sm:w-auto"
               >
-                {ctaState === 'success' ? (
+                {ctaState === 'loading' ? (
+                  <span className="inline-flex items-center gap-2">
+                    <LoaderCircle className="loading-spinner h-5 w-5" />
+                    {ctaLabel}
+                  </span>
+                ) : ctaState === 'success' ? (
                   <span className="inline-flex items-center gap-2">
                     <CheckCircle2 className="h-5 w-5" />
                     {ctaLabel}
@@ -509,7 +565,7 @@ const Landing = ({ onScan }) => {
                   ctaLabel
                 )}
               </button>
-              <button className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl border-2 border-white/50 bg-white/15 px-8 text-base font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-white/70 hover:bg-white/20 sm:w-auto">
+              <button className="cta-btn ripple-btn inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl border-2 border-white/50 bg-white/15 px-8 text-base font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-white/70 hover:bg-white/20 sm:w-auto">
                 <Play className="h-4 w-4 fill-current" />
                 Watch Demo
               </button>
@@ -557,7 +613,7 @@ const Landing = ({ onScan }) => {
                   )}
                   <button
                     onClick={() => setActiveFeature(feature.key)}
-                    className={`inline-flex items-center gap-2 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-200 ${
+                    className={`feature-pill inline-flex items-center gap-2 rounded-full border px-4 py-3 text-sm font-semibold transition-all duration-200 ${
                       selected
                         ? 'border-blue-300 bg-blue-50 text-[#2563EB] shadow-sm'
                         : 'border-slate-200 bg-white text-slate-600 hover:-translate-y-0.5 hover:border-blue-200 hover:text-[#2563EB]'
@@ -649,7 +705,14 @@ const Landing = ({ onScan }) => {
         </div>
       </motion.section>
 
-      <section id="demo" className="relative scroll-mt-28 overflow-hidden bg-white px-5 py-24 sm:px-8">
+      <motion.section
+        id="demo"
+        ref={demoRef}
+        className="relative scroll-mt-28 overflow-hidden bg-white px-5 py-24 sm:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        animate={demoInView ? { opacity: 1, y: 0 } : {}}
+        transition={baseTransition}
+      >
         <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-gradient-to-br from-blue-200/40 to-purple-200/30 blur-3xl" />
 
         <div className="relative mx-auto w-full max-w-7xl">
@@ -691,8 +754,10 @@ const Landing = ({ onScan }) => {
 
               <button
                 onClick={handlePrimaryCta}
-                className="mt-8 inline-flex h-12 items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-7 text-sm font-bold text-white shadow-md shadow-blue-300/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-blue-400/50"
+                disabled={ctaState === 'loading'}
+                className="cta-btn ripple-btn mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-7 text-sm font-bold text-white shadow-md shadow-blue-300/40 transition-all duration-300 hover:shadow-blue-400/50 disabled:cursor-not-allowed disabled:opacity-80"
               >
+                {ctaState === 'loading' && <LoaderCircle className="loading-spinner h-4 w-4" />}
                 Try It Free
               </button>
             </div>
@@ -709,6 +774,17 @@ const Landing = ({ onScan }) => {
 
                 <div className="relative h-[320px] w-full md:h-[360px]">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/0" />
+
+                  {!demoThumbLoaded && (
+                    <div className="absolute inset-0 animate-pulse bg-slate-200/35" />
+                  )}
+                  <img
+                    src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1400&q=80"
+                    alt="Resume analysis dashboard preview"
+                    loading="lazy"
+                    onLoad={() => setDemoThumbLoaded(true)}
+                    className={`lazy-fade absolute inset-0 h-full w-full object-cover ${demoThumbLoaded ? 'is-loaded' : ''}`}
+                  />
 
                   <div className="absolute left-8 top-8 w-[65%] rounded-xl border border-white/25 bg-white/80 p-5 shadow-lg backdrop-blur-sm blur-[1px]">
                     <div className="h-3 w-28 rounded bg-slate-300" />
@@ -737,9 +813,16 @@ const Landing = ({ onScan }) => {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section id="products" ref={productsRef} className="scroll-mt-28 bg-[#F9FAFB] px-5 py-24 sm:px-8">
+      <motion.section
+        id="products"
+        ref={productsRef}
+        className="scroll-mt-28 bg-[#F9FAFB] px-5 py-24 sm:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        animate={productsInView ? { opacity: 1, y: 0 } : {}}
+        transition={baseTransition}
+      >
         <div className="mx-auto w-full max-w-7xl">
           <p className="text-center text-sm font-bold uppercase tracking-widest text-blue-600">Process</p>
           <h2 className="mt-3 text-center font-['Inter','Poppins',sans-serif] text-4xl font-extrabold tracking-tight text-slate-900 md:text-5xl">
@@ -799,7 +882,7 @@ const Landing = ({ onScan }) => {
             })}
           </div>
         </div>
-      </section>
+      </motion.section>
 
       <motion.section
         id="pricing"
@@ -845,7 +928,7 @@ const Landing = ({ onScan }) => {
                 <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />ATS score</li>
                 <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Basic suggestions</li>
               </ul>
-              <button className="mt-8 w-full rounded-xl border-2 border-slate-300 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-500 hover:text-blue-600">
+              <button className="cta-btn ripple-btn mt-8 w-full rounded-xl border-2 border-slate-300 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-500 hover:text-blue-600">
                 Get Started Free
               </button>
             </div>
@@ -866,7 +949,7 @@ const Landing = ({ onScan }) => {
                 <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />One-click optimize</li>
                 <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Priority support</li>
               </ul>
-              <button className="mt-8 w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 py-3 text-sm font-bold text-white shadow-lg shadow-blue-300/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-blue-400/50">
+              <button className="cta-btn ripple-btn mt-8 w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 py-3 text-sm font-bold text-white shadow-lg shadow-blue-300/40 transition-all duration-300 hover:shadow-blue-400/50">
                 Start Pro Trial →
               </button>
             </div>
@@ -881,7 +964,7 @@ const Landing = ({ onScan }) => {
                 <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Bulk onboarding</li>
                 <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Dedicated success manager</li>
               </ul>
-              <button className="mt-8 w-full rounded-xl border-2 border-slate-300 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-500 hover:text-blue-600">
+              <button className="cta-btn ripple-btn mt-8 w-full rounded-xl border-2 border-slate-300 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-500 hover:text-blue-600">
                 Contact Sales
               </button>
             </div>
@@ -889,7 +972,13 @@ const Landing = ({ onScan }) => {
         </div>
       </motion.section>
 
-      <section className="scroll-mt-28 bg-[#F9FAFB] px-5 py-24 sm:px-8">
+      <motion.section
+        ref={testimonialsRef}
+        className="scroll-mt-28 bg-[#F9FAFB] px-5 py-24 sm:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        animate={testimonialsInView ? { opacity: 1, y: 0 } : {}}
+        transition={baseTransition}
+      >
         <div className="mx-auto w-full max-w-7xl">
           <p className="text-center text-sm font-bold uppercase tracking-widest text-blue-600">Success Stories</p>
           <h2 className="mt-3 text-center font-['Inter','Poppins',sans-serif] text-4xl font-extrabold tracking-tight text-slate-900 md:text-5xl">
@@ -933,9 +1022,16 @@ const Landing = ({ onScan }) => {
             ))}
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section id="about" ref={aboutRef} className="scroll-mt-28 bg-[#F9FAFB] px-5 py-24 sm:px-8">
+      <motion.section
+        id="about"
+        ref={aboutRef}
+        className="scroll-mt-28 bg-[#F9FAFB] px-5 py-24 sm:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        animate={aboutInView ? { opacity: 1, y: 0 } : {}}
+        transition={baseTransition}
+      >
         <div className="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-2 lg:gap-16">
           <div>
             <p className="text-sm font-bold uppercase tracking-widest text-blue-600">About Caliper</p>
@@ -992,9 +1088,16 @@ const Landing = ({ onScan }) => {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      <section id="resources" className="scroll-mt-28 bg-white px-5 py-24 sm:px-8" data-reveal>
+      <motion.section
+        id="resources"
+        ref={resourcesRef}
+        className="scroll-mt-28 bg-white px-5 py-24 sm:px-8"
+        initial={{ opacity: 0, y: 24 }}
+        animate={resourcesInView ? { opacity: 1, y: 0 } : {}}
+        transition={baseTransition}
+      >
         <div className="mx-auto w-full max-w-7xl">
           <p className="text-center text-sm font-bold uppercase tracking-widest text-blue-600">Resources</p>
           <h2 className="mt-3 text-center font-['Inter','Poppins',sans-serif] text-4xl font-extrabold tracking-tight text-slate-900 md:text-5xl">
@@ -1046,7 +1149,7 @@ const Landing = ({ onScan }) => {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       <motion.section
         id="signin"
@@ -1072,11 +1175,19 @@ const Landing = ({ onScan }) => {
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <button
               onClick={handlePrimaryCta}
-              className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-white px-12 py-5 text-lg font-bold text-[#2563EB] shadow-2xl transition-all duration-300 hover:scale-[1.03] hover:shadow-white/20 sm:w-auto"
+              disabled={ctaState === 'loading'}
+              className="cta-btn ripple-btn inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-white px-12 py-5 text-lg font-bold text-[#2563EB] shadow-2xl transition-all duration-300 hover:shadow-white/20 disabled:cursor-not-allowed disabled:opacity-80 sm:w-auto"
             >
-              Start Free Analysis →
+              {ctaState === 'loading' ? (
+                <>
+                  <LoaderCircle className="loading-spinner h-5 w-5" />
+                  Analyzing...
+                </>
+              ) : (
+                'Start Free Analysis →'
+              )}
             </button>
-            <button className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl border-2 border-white/30 px-10 py-5 text-base font-semibold text-white transition-all duration-300 hover:border-white/60 hover:bg-white/10 sm:w-auto">
+            <button className="cta-btn ripple-btn inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl border-2 border-white/30 px-10 py-5 text-base font-semibold text-white transition-all duration-300 hover:border-white/60 hover:bg-white/10 sm:w-auto">
               <Play className="h-4 w-4 fill-current" />
               Watch Demo
             </button>
@@ -1089,82 +1200,7 @@ const Landing = ({ onScan }) => {
         </div>
       </motion.section>
 
-      <footer className="bg-gradient-to-b from-gray-900 to-gray-800 px-5 pb-8 pt-16 text-slate-300 sm:px-8">
-        <div className="mx-auto grid w-full max-w-7xl gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md">
-                <Compass className="h-5 w-5" />
-              </div>
-              <span className="text-xl font-extrabold text-white">Caliper</span>
-            </div>
-            <p className="mt-4 text-sm leading-7 text-slate-400">
-              Precision resume optimization for ambitious professionals targeting their next breakthrough role.
-            </p>
-            <div className="mt-5">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Newsletter</p>
-              <div className="flex overflow-hidden rounded-lg border border-slate-700">
-                <input type="email" placeholder="you@email.com" className="flex-1 bg-transparent px-3 py-2 text-sm text-white placeholder-slate-500 outline-none" />
-                <button className="bg-gradient-to-r from-blue-600 to-purple-600 px-3 py-2 text-xs font-bold text-white">Join</button>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-widest text-slate-200">Product</h3>
-            <ul className="mt-4 space-y-3 text-sm">
-              <li><a href="#features" onClick={(event) => handleNavClick(event, 'features')} className="text-slate-400 transition-colors hover:text-white">Features</a></li>
-              <li><a href="#pricing" onClick={(event) => handleNavClick(event, 'pricing')} className="text-slate-400 transition-colors hover:text-white">Pricing</a></li>
-              <li><a href="#products" onClick={(event) => handleNavClick(event, 'products')} className="text-slate-400 transition-colors hover:text-white">How It Works</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-widest text-slate-200">Resources</h3>
-            <ul className="mt-4 space-y-3 text-sm">
-              <li><a href="#resources" onClick={(event) => handleNavClick(event, 'resources')} className="text-slate-400 transition-colors hover:text-white">Blog</a></li>
-              <li><a href="#resources" onClick={(event) => handleNavClick(event, 'resources')} className="text-slate-400 transition-colors hover:text-white">Help Center</a></li>
-              <li><a href="#about" onClick={(event) => handleNavClick(event, 'about')} className="text-slate-400 transition-colors hover:text-white">About Us</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-widest text-slate-200">Contact</h3>
-            <ul className="mt-4 space-y-3 text-sm text-slate-400">
-              <li>hello@caliper.ai</li>
-              <li className="flex gap-2">
-                {['X', 'LI', 'GH'].map((s) => (
-                  <span key={s} className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-slate-600 text-xs font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-400 hover:bg-blue-900/30 hover:text-blue-300">{s}</span>
-                ))}
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="mx-auto mt-12 w-full max-w-7xl border-t border-gray-700/60 pt-6">
-          <div className="flex flex-col items-center justify-between gap-4 text-xs text-slate-500 sm:flex-row">
-            <p>© {new Date().getFullYear()} Caliper. All rights reserved.</p>
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <span className="inline-flex items-center gap-1"><Lock className="h-3 w-3" /> Secure</span>
-              <span className="inline-flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> GDPR Compliant</span>
-              <span className="inline-flex items-center gap-1"><GraduationCap className="h-3 w-3" /> ISO Certified</span>
-              <a href="#top" onClick={(event) => handleNavClick(event, 'top')} className="hover:text-slate-300">Privacy</a>
-              <a href="#top" onClick={(event) => handleNavClick(event, 'top')} className="hover:text-slate-300">Terms</a>
-            </div>
-          </div>
-        </div>
-      </footer>
-
-      {/* Back to top */}
-      {showBackTop && (
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-purple-600 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-blue-400/40"
-          aria-label="Back to top"
-        >
-          <ChevronUp className="h-5 w-5" />
-        </button>
-      )}
+      <Footer onNavClick={handleNavClick} />
     </div>
   );
 };
