@@ -285,7 +285,9 @@ const Landing = ({ onScan }) => {
 
     const targetEl = document.getElementById(target);
     if (targetEl) {
-      targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const headerOffset = 96;
+      const targetTop = targetEl.getBoundingClientRect().top + window.scrollY - headerOffset;
+      window.scrollTo({ top: Math.max(targetTop, 0), behavior: 'smooth' });
       return;
     }
 
@@ -337,17 +339,17 @@ const Landing = ({ onScan }) => {
           .pulse-cta { animation: pulseCta 2.8s ease-in-out infinite; }
           .mobile-menu-open { animation: slideInRight 0.22s ease-out; }
           .hero-gradient-bg {
-            background: linear-gradient(135deg, #7e22ce 0%, #2563eb 55%, #6d28d9 100%);
+            background: linear-gradient(135deg, #eff6ff 0%, #ffffff 52%, #e0f2fe 100%);
             background-size: 200% 200%;
             animation: heroGradientMove 16s ease-in-out infinite;
           }
           .hero-particles {
-            background-image: radial-gradient(circle, rgba(255,255,255,0.38) 1px, transparent 1px);
+            background-image: radial-gradient(circle, rgba(59,130,246,0.12) 1px, transparent 1px);
             background-size: 22px 22px;
           }
           .hero-glow-text {
-            color: #f8fbff;
-            text-shadow: 0 0 14px rgba(96, 165, 250, 0.55), 0 0 28px rgba(167, 139, 250, 0.45);
+            color: #1d4ed8;
+            text-shadow: 0 0 10px rgba(147, 197, 253, 0.45);
           }
           .nav-link-line::after {
             content: ''; display: block; height: 2px;
@@ -406,7 +408,7 @@ const Landing = ({ onScan }) => {
           </nav>
 
           <div className="ml-auto hidden lg:block">
-            <CTAButton size="md">Get Started</CTAButton>
+            <CTAButton size="md" onClick={handlePrimaryCta}>Scan Your Resume</CTAButton>
           </div>
 
           <button
@@ -436,7 +438,7 @@ const Landing = ({ onScan }) => {
                   </a>
                 );
               })}
-              <CTAButton size="md" className="mt-2 w-full">Get Started</CTAButton>
+              <CTAButton size="md" className="mt-2 w-full" onClick={handlePrimaryCta}>Scan Your Resume</CTAButton>
             </div>
           </div>
         )}
@@ -445,7 +447,7 @@ const Landing = ({ onScan }) => {
       <motion.section
         id="top"
         ref={heroRef}
-        className="relative overflow-hidden px-4 pb-20 pt-32 sm:px-6 lg:px-8"
+        className="relative overflow-hidden px-4 pb-20 pt-8 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 36 }}
         animate={heroInView ? { opacity: 1, y: 0 } : {}}
         transition={{ ...baseTransition, delay: 0.5 }}
@@ -454,47 +456,148 @@ const Landing = ({ onScan }) => {
         <div className="hero-particles pointer-events-none absolute inset-0 z-0 opacity-20" />
 
         <div className="float-shape absolute left-8 top-20 z-0 h-28 w-28 rounded-full bg-blue-200/35 blur-2xl" />
-        <div className="float-shape-slow absolute right-16 top-24 z-0 h-36 w-36 rounded-3xl bg-purple-200/30 blur-2xl" />
+        <div className="float-shape-slow absolute right-16 top-24 z-0 h-36 w-36 rounded-3xl bg-sky-200/30 blur-2xl" />
         <div className="float-shape absolute bottom-20 left-[22%] z-0 h-16 w-16 rounded-full bg-cyan-200/35 blur-xl" />
-        <div className="float-shape-slow absolute bottom-28 right-[20%] z-0 h-24 w-24 rotate-12 rounded-xl bg-pink-200/35 blur-xl" />
+        <div className="float-shape-slow absolute bottom-28 right-[20%] z-0 h-24 w-24 rotate-12 rounded-xl bg-blue-100/45 blur-xl" />
         <div className="float-shape absolute right-[36%] top-44 z-0 h-12 w-12 rotate-45 rounded-md bg-white/30 blur-lg" />
 
         <div className="relative z-10 mx-auto w-full max-w-7xl">
-          <div className="max-w-4xl rounded-3xl border border-white/20 bg-white/10 p-8 shadow-[0_24px_80px_rgba(30,41,59,0.25)] backdrop-blur-lg sm:p-10 md:p-12">
-            <p className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/20 px-4 py-2 text-sm font-semibold text-white shadow-sm backdrop-blur-sm">
-              <Flame className="h-4 w-4 text-orange-500" />
-              AI-Powered Resume Intelligence
-            </p>
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            {/* Left Side - Clean & Minimal */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="space-y-8"
+            >
+              {/* Badge */}
+              <div className="inline-block">
+                <p className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700">
+                  <Sparkles className="h-4 w-4" />
+                  AI Resume Scanner
+                </p>
+              </div>
 
-            <h1 className="font-['Inter','Poppins',sans-serif] text-5xl font-extrabold leading-tight tracking-tight text-white md:text-7xl">
-              Optimize Your Resume to Land{' '}
-              <span className="hero-glow-text inline-block">
-                More Interviews
-              </span>
-            </h1>
+              {/* Main Headline - Bold & Clear */}
+              <div>
+                <h1 className="font-['Poppins',sans-serif] text-5xl font-extrabold leading-tight text-slate-900 sm:text-6xl md:text-7xl">
+                  Get Your ATS Score in{' '}
+                  <span className="hero-glow-text bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                    2 Minutes
+                  </span>
+                </h1>
+              </div>
 
-            <p className="mt-7 max-w-2xl text-lg leading-relaxed text-blue-50/95">
-              Caliper AI analyzes your resume against job descriptions using advanced AI to give you an instant match score and actionable feedback.
-            </p>
+              {/* Description - Short & Punchy */}
+              <p className="text-lg leading-relaxed text-slate-600 max-w-lg">
+                Caliper analyzes your resume against real ATS algorithms. Discover exactly what's holding you back and fix it fast.
+              </p>
 
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
-              <CTAButton
-                onClick={handlePrimaryCta}
-                loading={ctaState === 'loading'}
-                loadingText="Analyzing..."
-                className="pulse-cta h-14 w-full sm:w-auto"
+              {/* Primary CTA */}
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center pt-4">
+                <CTAButton
+                  onClick={handlePrimaryCta}
+                  loading={ctaState === 'loading'}
+                  loadingText="Analyzing..."
+                  className="pulse-cta h-14 w-full sm:w-auto px-8"
+                >
+                  {ctaState === 'success' ? 'Ready to Scan' : 'Scan Your Resume Free'}
+                </CTAButton>
+              </div>
+
+              {/* Trust Signal - Single Line */}
+              <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="flex items-center gap-6 pt-4"
               >
-                {ctaState === 'success' ? 'Ready to Scan' : 'Scan Your Resume'}
-              </CTAButton>
-              <button className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl border-2 border-white/50 bg-white/15 px-8 text-base font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-white/70 hover:bg-white/20 sm:w-auto">
-                <Play className="h-4 w-4 fill-current" />
-                Watch Demo
-              </button>
-            </div>
+                <div>
+                  <p className="text-sm font-bold text-slate-900">15,000+</p>
+                  <p className="text-xs text-slate-500">Resumes Analyzed</p>
+                </div>
+                <div className="h-8 border-r border-slate-200" />
+                <div>
+                  <p className="text-sm font-bold text-slate-900">92%</p>
+                  <p className="text-xs text-slate-500">Interview Rate</p>
+                </div>
+                <div className="h-8 border-r border-slate-200" />
+                <div>
+                  <p className="text-sm font-bold text-slate-900">Free</p>
+                  <p className="text-xs text-slate-500">Forever</p>
+                </div>
+              </motion.div>
+            </motion.div>
 
-            <p className="mt-5 text-sm font-medium text-blue-100/90">
-              ✔ No CC Required &nbsp;&bull;&nbsp; ✔ 2 Min Setup &nbsp;&bull;&nbsp; ✔ Free Forever
-            </p>
+            {/* Right Side - Premium Visual Card */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.92, y: 30 }} 
+              animate={{ opacity: 1, scale: 1, y: 0 }} 
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="hidden lg:block"
+            >
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-200 to-cyan-200 rounded-3xl blur-2xl opacity-20" />
+                <div className="relative rounded-3xl border border-blue-100/60 bg-gradient-to-br from-white to-blue-50/40 p-8 shadow-[0_25px_80px_rgba(59,130,246,0.18)] backdrop-blur-lg">
+                  
+                  {/* Sample Resume Card */}
+                  <div className="rounded-2xl border border-slate-200 bg-white p-6 mb-6 shadow-sm">
+                    <div className="space-y-3">
+                      <div>
+                        <p className="font-bold text-slate-900 text-sm">Sarah Chen</p>
+                        <p className="text-xs text-slate-500">Senior Product Manager</p>
+                      </div>
+                      <div className="h-px bg-slate-100" />
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <span className="inline-block px-2 py-1 rounded bg-blue-100 text-xs font-semibold text-blue-700">Product Strategy</span>
+                          <span className="inline-block px-2 py-1 rounded bg-emerald-100 text-xs font-semibold text-emerald-700">Leadership</span>
+                        </div>
+                        <p className="text-xs text-slate-600 leading-relaxed">
+                          Led go-to-market for 3 flagship products. Increased user retention by 34%.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Analysis Result */}
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-bold uppercase tracking-wide text-slate-600">ATS Match Score</span>
+                        <span className="text-2xl font-extrabold text-blue-600">89%</span>
+                      </div>
+                      <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
+                        <motion.div 
+                          initial={{ width: 0 }} 
+                          animate={{ width: '89%' }} 
+                          transition={{ duration: 1.4, delay: 0.6, ease: 'easeOut' }}
+                          className="h-3 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500" 
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 pt-2">
+                      <div className="rounded-lg border border-emerald-100 bg-emerald-50/70 p-3">
+                        <p className="text-xs font-semibold text-emerald-700">✓ Strong</p>
+                        <p className="text-[11px] text-emerald-600 mt-1">Keyword match is excellent</p>
+                      </div>
+                      <div className="rounded-lg border border-amber-100 bg-amber-50/70 p-3">
+                        <p className="text-xs font-semibold text-amber-700">⚠ Opportunity</p>
+                        <p className="text-[11px] text-amber-600 mt-1">Add 2 more leadership examples</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom CTA Badge */}
+                  <div className="mt-6 pt-6 border-t border-slate-100">
+                    <p className="text-center text-xs text-slate-500">
+                      Real ATS scoring • <span className="font-semibold">Instant feedback</span> • No email required
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </motion.section>
@@ -502,7 +605,7 @@ const Landing = ({ onScan }) => {
       <motion.section
         id="features"
         ref={featuresRef}
-        className="relative scroll-mt-24 overflow-hidden bg-white px-4 pt-32 pb-20 sm:px-6 lg:px-8"
+        className="relative overflow-hidden bg-white px-4 pt-32 pb-20 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 28 }}
         animate={featuresInView ? { opacity: 1, y: 0 } : {}}
         transition={baseTransition}
@@ -629,7 +732,7 @@ const Landing = ({ onScan }) => {
       <motion.section
         id="demo"
         ref={demoRef}
-        className="relative scroll-mt-24 overflow-hidden bg-white px-4 pt-32 pb-20 sm:px-6 lg:px-8"
+        className="relative overflow-hidden bg-white px-4 pt-32 pb-20 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 24 }}
         animate={demoInView ? { opacity: 1, y: 0 } : {}}
         transition={baseTransition}
@@ -740,7 +843,7 @@ const Landing = ({ onScan }) => {
       <motion.section
         id="products"
         ref={productsRef}
-        className="scroll-mt-24 bg-gray-50 px-4 pt-32 pb-20 sm:px-6 lg:px-8"
+        className="bg-gray-50 px-4 pt-32 pb-20 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 24 }}
         animate={productsInView ? { opacity: 1, y: 0 } : {}}
         transition={baseTransition}
@@ -809,7 +912,7 @@ const Landing = ({ onScan }) => {
       <motion.section
         id="pricing"
         ref={pricingRef}
-        className="scroll-mt-24 bg-white px-4 pt-32 pb-20 sm:px-6 lg:px-8"
+        className="bg-white px-4 pt-32 pb-20 sm:px-6 lg:px-8"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={pricingInView ? { opacity: 1, scale: 1 } : {}}
         transition={baseTransition}
@@ -824,19 +927,38 @@ const Landing = ({ onScan }) => {
           </p>
 
           {/* Annual / Monthly toggle */}
-          <div className="mt-8 flex items-center justify-center gap-4">
-            <span className={`text-sm font-medium ${!pricingAnnual ? 'text-slate-900' : 'text-slate-400'}`}>Monthly</span>
-            <button
-              onClick={() => setPricingAnnual((p) => !p)}
-              className={`relative h-7 w-14 rounded-full transition-colors duration-300 ${pricingAnnual ? 'bg-blue-600' : 'bg-slate-200'}`}
-              aria-label="Toggle annual pricing"
+          <div className="mt-8 flex items-center justify-center">
+            <div
+              className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1"
+              role="group"
+              aria-label="Billing cycle"
             >
-              <span className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-transform duration-300 ${pricingAnnual ? 'translate-x-8' : 'translate-x-1'}`} />
-            </button>
-            <span className={`text-sm font-medium ${pricingAnnual ? 'text-slate-900' : 'text-slate-400'}`}>
-              Annual
-              <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-bold text-emerald-700">Save 20%</span>
-            </span>
+              <button
+                type="button"
+                onClick={() => setPricingAnnual(false)}
+                aria-pressed={!pricingAnnual}
+                className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+                  !pricingAnnual
+                    ? 'bg-white text-slate-900 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                Monthly
+              </button>
+              <button
+                type="button"
+                onClick={() => setPricingAnnual(true)}
+                aria-pressed={pricingAnnual}
+                className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+                  pricingAnnual
+                    ? 'bg-white text-slate-900 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-700'
+                }`}
+              >
+                Annual
+                <span className="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-bold text-emerald-700">Save 20%</span>
+              </button>
+            </div>
           </div>
 
           <div className="mt-12 grid items-stretch gap-6 md:grid-cols-3">
@@ -852,8 +974,11 @@ const Landing = ({ onScan }) => {
                   <li className="flex items-center gap-3"><CheckCircle2 className="h-5 w-5 flex-shrink-0 text-[#10B981]" />Basic suggestions</li>
                 </ul>
               </div>
-              <button className="mt-8 w-full rounded-xl border-2 border-slate-300 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-500 hover:text-blue-600">
-                Get Started Free
+              <button
+                onClick={handlePrimaryCta}
+                className="mt-8 w-full rounded-xl border-2 border-slate-300 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-500 hover:text-blue-600"
+              >
+                Scan Your Resume
               </button>
             </div>
 
@@ -902,7 +1027,7 @@ const Landing = ({ onScan }) => {
 
       <motion.section
         ref={testimonialsRef}
-        className="scroll-mt-24 bg-gray-50 px-4 pt-32 pb-20 sm:px-6 lg:px-8"
+        className="bg-gray-50 px-4 pt-32 pb-20 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 24 }}
         animate={testimonialsInView ? { opacity: 1, y: 0 } : {}}
         transition={baseTransition}
@@ -955,7 +1080,7 @@ const Landing = ({ onScan }) => {
       <motion.section
         id="about"
         ref={aboutRef}
-        className="scroll-mt-24 bg-gray-50 px-4 pt-32 pb-20 sm:px-6 lg:px-8"
+        className="bg-gray-50 px-4 pt-32 pb-20 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 24 }}
         animate={aboutInView ? { opacity: 1, y: 0 } : {}}
         transition={baseTransition}
@@ -1082,42 +1207,40 @@ const Landing = ({ onScan }) => {
       <motion.section
         id="signin"
         ref={ctaRef}
-        className="scroll-mt-24 relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 px-4 pt-32 pb-20 text-white sm:px-6 lg:px-8"
+        className="relative overflow-hidden bg-gradient-to-br from-white via-blue-50 to-cyan-50 px-4 pt-32 pb-20 sm:px-6 lg:px-8"
         initial={{ opacity: 0, x: -40 }}
         animate={ctaInView ? { opacity: 1, x: 0 } : {}}
         transition={baseTransition}
       >
-        <div className="animated-bg absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600" />
-        <div className="grid-bg pointer-events-none absolute inset-0 opacity-10" />
-        <div className="relative mx-auto w-full max-w-4xl rounded-2xl border border-white/10 bg-white/5 p-10 text-center backdrop-blur-sm md:p-16">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-blue-200">
-            <Users className="h-4 w-4" />
-            Join 10,000+ professionals already optimizing their careers
-          </div>
-          <h2 className="font-['Inter','Poppins',sans-serif] text-4xl font-extrabold tracking-tight sm:text-5xl">
-            Ready to Optimize Your Resume?
-          </h2>
-          <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-blue-100">
-            Get your AI-powered match score, skill gap analysis, and one-click optimization — all free.
-          </p>
-          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <CTAButton
-              onClick={handlePrimaryCta}
-              loading={ctaState === 'loading'}
-              loadingText="Analyzing..."
-              className="h-14 w-full sm:w-auto"
-            >
-              Start Free Analysis
-            </CTAButton>
-            <button className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl border-2 border-white/30 px-10 py-5 text-base font-semibold text-white transition-all duration-300 hover:border-white/60 hover:bg-white/10 sm:w-auto">
-              <Play className="h-4 w-4 fill-current" />
-              Watch Demo
-            </button>
-          </div>
-          <div className="mt-8 flex flex-wrap justify-center gap-3 text-xs font-medium text-blue-200">
-            <span className="inline-flex items-center gap-1 rounded-full border border-white/20 px-3 py-1.5"><Lock className="h-3.5 w-3.5" /> Secure &amp; Private</span>
-            <span className="inline-flex items-center gap-1 rounded-full border border-white/20 px-3 py-1.5"><CheckCircle2 className="h-3.5 w-3.5" /> GDPR Compliant</span>
-            <span className="inline-flex items-center gap-1 rounded-full border border-white/20 px-3 py-1.5"><GraduationCap className="h-3.5 w-3.5" /> No Credit Card Required</span>
+        <div className="float-shape absolute left-10 top-20 z-0 h-32 w-32 rounded-full bg-blue-200/25 blur-3xl" />
+        <div className="float-shape-slow absolute right-12 bottom-20 z-0 h-40 w-40 rounded-full bg-cyan-200/20 blur-3xl" />
+        <div className="relative z-10 mx-auto w-full max-w-4xl">
+          <div className="rounded-3xl border border-blue-100/80 bg-white/85 p-10 text-center shadow-[0_20px_60px_rgba(59,130,246,0.12)] backdrop-blur-sm md:p-16">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700">
+              <Users className="h-4 w-4" />
+              Join 10,000+ professionals already optimizing their careers
+            </div>
+            <h2 className="font-['Inter','Poppins',sans-serif] text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+              Ready to Optimize Your Resume?
+            </h2>
+            <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-slate-600">
+              Get your AI-powered match score, skill gap analysis, and one-click optimization — all free.
+            </p>
+            <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+              <CTAButton
+                onClick={handlePrimaryCta}
+                loading={ctaState === 'loading'}
+                loadingText="Analyzing..."
+                className="h-14 w-full sm:w-auto"
+              >
+                Start Free Analysis
+              </CTAButton>
+            </div>
+            <div className="mt-8 flex flex-wrap justify-center gap-3 text-xs font-medium text-slate-600">
+              <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-1.5"><Lock className="h-3.5 w-3.5" /> Secure &amp; Private</span>
+              <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-1.5"><CheckCircle2 className="h-3.5 w-3.5" /> GDPR Compliant</span>
+              <span className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-1.5"><GraduationCap className="h-3.5 w-3.5" /> No Credit Card Required</span>
+            </div>
           </div>
         </div>
       </motion.section>

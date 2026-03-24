@@ -101,5 +101,11 @@ if __name__ == "__main__":
         if "error" in resume_text.lower():
             print(resume_text)
         else:
-            # Print the final JSON string so Node.js can catch it
-            print(run_ai(resume_text, job_desc))
+            # Attach extracted resume text so downstream features can reuse it.
+            ai_json = run_ai(resume_text, job_desc)
+            try:
+                payload = json.loads(ai_json)
+                payload["resume_text"] = resume_text
+                print(json.dumps(payload))
+            except Exception:
+                print(ai_json)

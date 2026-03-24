@@ -7,6 +7,7 @@ import './App.css';
 
 // new landing components
 import Landing from './components/Landing';
+import AIInterviewer from './components/AIInterviewer';
 
 const App = () => {
   const [currentView, setCurrentView] = useState('home');
@@ -27,6 +28,8 @@ const App = () => {
 
   const [cover, setCover] = useState('');
   const [coverLoading, setCoverLoading] = useState(false);
+  const [currentInterviewBullet, setCurrentInterviewBullet] = useState('');
+  const [improvedBullets, setImprovedBullets] = useState([]);
   const [isDraggingFile, setIsDraggingFile] = useState(false);
   const [uploadAnnouncement, setUploadAnnouncement] = useState('');
   const [uploadTimestamp, setUploadTimestamp] = useState(null);
@@ -105,6 +108,8 @@ const App = () => {
       });
       // backend adds scanId, label, resume_text, and we still want to remember the job description
       setResult({ ...response.data, label: response.data.label || 'Untitled', jd });
+      setCurrentInterviewBullet('');
+      setImprovedBullets([]);
       setCurrentView('results');
       // refresh history so the new scan appears
       fetchScans();
@@ -184,6 +189,32 @@ const App = () => {
   const sampleJD = `We are hiring a Frontend Engineer with strong React and JavaScript experience.\n\nResponsibilities:\n- Build reusable UI components and improve application performance\n- Collaborate with design and backend teams to deliver features\n- Write clean, testable, and maintainable code\n\nRequirements:\n- 2+ years of React experience\n- Strong knowledge of HTML, CSS, JavaScript, and REST APIs\n- Experience with Git and modern frontend tooling\n- Excellent communication and problem-solving skills`;
 
   const currentStep = loading ? 3 : jd.trim() ? 3 : file ? 2 : 1;
+  const weakBullets = React.useMemo(() => {
+    if (!result) return [];
+
+    if (Array.isArray(result.weak_bullets)) {
+      return Array.from(
+        new Set(
+          result.weak_bullets
+            .map((item) => (typeof item === 'string' ? item.trim() : ''))
+            .filter(Boolean)
+        )
+      ).slice(0, 6);
+    }
+
+    const fromTips = (result.tips || '')
+      .split(/\r?\n/)
+      .map((line) => line.replace(/^\s*[-*\d.)]+\s*/, '').trim())
+      .filter((line) => line.length >= 20);
+
+    if (fromTips.length > 0) {
+      return Array.from(new Set(fromTips)).slice(0, 4);
+    }
+
+    const fallback = (result.skill_scan || '').trim();
+    return fallback ? [fallback] : [];
+  }, [result]);
+
   const stepItems = [
     { id: 1, label: 'Upload' },
     { id: 2, label: 'Paste JD' },
@@ -631,6 +662,84 @@ const App = () => {
                 <div className="glass-card" style={{padding: '40px'}}>
                   <h2 style={{margin: '0 0 20px 0', fontSize: '24px', fontWeight: '700', color: '#1e293b'}}>Improvement Tips</h2>
                   <div style={{color: '#334155', fontSize: '16px', lineHeight: '1.6', whiteSpace: 'pre-wrap'}}>{result.tips}</div>
+                </div>
+
+                <div className="glass-card" style={{ padding: '40px', marginTop: '30px' }}>
+                  <h2 style={{ margin: '0 0 8px 0', fontSize: '24px', fontWeight: '700', color: '#1e293b' }}>
+                    Weak Bullet Points Detected
+                  </h2>
+                  <p style={{ margin: '0 0 20px 0', color: '#64748b', fontSize: '14px' }}>
+                    Use AI Interview Mode to turn weak bullets into STAR-style achievements.
+                  </p>
+
+                  {weakBullets.length === 0 ? (
+                    <p style={{ color: '#64748b', fontSize: '14px' }}>
+                      No weak bullets were auto-detected in this result.
+                    </p>
+                  ) : (
+                    <div style={{ display: 'grid', gap: '12px', marginBottom: '20px' }}>
+                      {weakBullets.map((bullet, idx) => (
+                        <div
+                          key={`${bullet}-${idx}`}
+                          style={{
+                            border: '1px solid #fecaca',
+                            background: '#fef2f2',
+                            borderRadius: '12px',
+                            padding: '14px'
+                          }}
+                        >
+                          <p style={{ margin: 0, color: '#991b1b', fontSize: '14px', lineHeight: 1.5 }}>{bullet}</p>
+                          <button
+                            onClick={() => setCurrentInterviewBullet(bullet)}
+                            style={{
+                              marginTop: '10px',
+                              border: 'none',
+                              background: 'transparent',
+                              color: '#2563eb',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              padding: 0,
+                              fontSize: '13px'
+                            }}
+                          >
+                            Improve with AI Interview →
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {currentInterviewBullet && token && (
+                    <AIInterviewer
+                      bulletPoint={currentInterviewBullet}
+                      resumeText={result.resume_text || ''}
+                      token={token}
+                      onComplete={(improvedBullet) => {
+                        if (!improvedBullet) return;
+                        setImprovedBullets((prev) => [improvedBullet, ...prev.filter((item) => item !== improvedBullet)]);
+                      }}
+                      onClose={() => setCurrentInterviewBullet('')}
+                    />
+                  )}
+
+                  {currentInterviewBullet && !token && (
+                    <p style={{ color: '#dc2626', fontSize: '14px' }}>Please log in to use AI Interview Mode.</p>
+                  )}
+
+                  {improvedBullets.length > 0 && (
+                    <div style={{ marginTop: '20px' }}>
+                      <h3 style={{ margin: '0 0 10px 0', color: '#065f46', fontSize: '16px', fontWeight: '700' }}>
+                        Improved Bullets from Interview
+                      </h3>
+                      <div style={{ display: 'grid', gap: '10px' }}>
+                        {improvedBullets.map((item, idx) => (
+                          <div key={`${item}-${idx}`} style={{ borderLeft: '4px solid #10b981', background: '#ecfdf5', borderRadius: '8px', padding: '10px 12px' }}>
+                            <p style={{ margin: 0, color: '#065f46', fontSize: '14px' }}>{item}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* cover letter area */}

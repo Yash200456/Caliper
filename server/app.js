@@ -4,6 +4,7 @@ const multer = require('multer');
 const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -31,6 +32,68 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+const parseJsonFromModelOutput = (rawText) => {
+    if (!rawText || typeof rawText !== 'string') {
+        throw new Error('AI response was empty.');
+    }
+
+    let cleaned = rawText.trim();
+    if (cleaned.startsWith('```json')) cleaned = cleaned.slice(7);
+    if (cleaned.startsWith('```')) cleaned = cleaned.slice(3);
+    if (cleaned.endsWith('```')) cleaned = cleaned.slice(0, -3);
+
+    return JSON.parse(cleaned.trim());
+};
+
+const resolvePythonScript = (scriptName) => {
+    const localScript = path.join(__dirname, scriptName);
+    if (fs.existsSync(localScript)) return localScript;
+
+    const rootScript = path.join(__dirname, '..', scriptName);
+    if (fs.existsSync(rootScript)) return rootScript;
+
+    throw new Error(`Python script not found: ${scriptName}`);
+};
+
+const runPythonScript = (scriptName, args = [], stdin = '') => {
+    return new Promise((resolve, reject) => {
+        let stdout = '';
+        let stderr = '';
+        let scriptPath;
+
+        try {
+            scriptPath = resolvePythonScript(scriptName);
+        } catch (err) {
+            reject(err);
+            return;
+        }
+
+        const pythonProcess = spawn('python', [scriptPath, ...args]);
+
+        pythonProcess.stdout.on('data', (data) => {
+            stdout += data.toString();
+        });
+
+        pythonProcess.stderr.on('data', (data) => {
+            stderr += data.toString();
+        });
+
+        pythonProcess.on('error', (err) => reject(err));
+
+        pythonProcess.on('close', (code) => {
+            if (code !== 0) {
+                return reject(new Error(stderr || `Python process exited with code ${code}`));
+            }
+            resolve(stdout);
+        });
+
+        if (stdin) {
+            pythonProcess.stdin.write(stdin);
+        }
+        pythonProcess.stdin.end();
+    });
+};
+
 // --- DATABASE INITIALIZATION ---
 // Automatically create the Users table if it doesn't exist yet
 const initializeDB = async () => {
@@ -56,7 +119,29 @@ const initializeDB = async () => {
             );
         `);
 
-        console.log("🐘 Database connected & Users/Scans tables verified.");
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS interview_sessions (
+                id SERIAL PRIMARY KEY,
+                session_id VARCHAR(255) UNIQUE NOT NULL,
+                user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+                resume_text TEXT,
+                bullet_point TEXT NOT NULL,
+                improved_bullet TEXT,
+                completed BOOLEAN DEFAULT FALSE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS interview_answers (
+                id SERIAL PRIMARY KEY,
+                session_id VARCHAR(255) REFERENCES interview_sessions(session_id) ON DELETE CASCADE,
+                answer TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        console.log('🐘 Database connected & tables verified (users, scans, interviews).');
     } catch (err) {
         console.error("❌ Database connection failed:", err);
     }
@@ -227,8 +312,7 @@ app.post('/api/analyze', verifyToken, upload.single('resume'), async (req, res) 
 
         try {
             const resultData = JSON.parse(dataString);
-            // attach the raw resume text and job description for later cover-letter generation
-            resultData.resume_text = resume_text;
+            // attach job description so the frontend can reuse it for cover-letter generation
             resultData.jd = jd;
 
             // persist scan to database and return the new record's id
@@ -243,6 +327,88 @@ app.post('/api/analyze', verifyToken, upload.single('resume'), async (req, res) 
             res.status(500).json({ error: "Failed to parse AI response." });
         }
     });
+});
+
+// --- AGENTIC INTERVIEW ROUTES ---
+app.post('/api/interview/start', verifyToken, async (req, res) => {
+    try {
+        const { resume_text = '', bullet_point } = req.body;
+        if (!bullet_point || typeof bullet_point !== 'string' || !bullet_point.trim()) {
+            return res.status(400).json({ error: 'bullet_point is required.' });
+        }
+
+        const sessionId = `session_${Date.now()}_${crypto.randomBytes(5).toString('hex')}`;
+
+        await pool.query(
+            'INSERT INTO interview_sessions (session_id, user_id, resume_text, bullet_point, created_at) VALUES ($1, $2, $3, $4, NOW())',
+            [sessionId, req.userId, resume_text, bullet_point.trim()]
+        );
+
+        const raw = await runPythonScript('interview_engine.py', ['start', bullet_point.trim()]);
+        const result = parseJsonFromModelOutput(raw);
+
+        if (!result.question) {
+            return res.status(500).json({ error: 'AI did not return a first question.' });
+        }
+
+        return res.json({
+            session_id: sessionId,
+            first_question: result.question,
+            context: result.context || null
+        });
+    } catch (err) {
+        console.error('Interview start error:', err);
+        return res.status(500).json({ error: 'Failed to start interview.' });
+    }
+});
+
+app.post('/api/interview/continue', verifyToken, async (req, res) => {
+    try {
+        const { session_id, answer } = req.body;
+        if (!session_id || !answer || typeof answer !== 'string' || !answer.trim()) {
+            return res.status(400).json({ error: 'session_id and answer are required.' });
+        }
+
+        const session = await pool.query(
+            'SELECT * FROM interview_sessions WHERE session_id = $1 AND user_id = $2',
+            [session_id, req.userId]
+        );
+
+        if (session.rows.length === 0) {
+            return res.status(404).json({ error: 'Session not found.' });
+        }
+
+        await pool.query(
+            'INSERT INTO interview_answers (session_id, answer, created_at) VALUES ($1, $2, NOW())',
+            [session_id, answer.trim()]
+        );
+
+        const history = await pool.query(
+            'SELECT answer FROM interview_answers WHERE session_id = $1 ORDER BY created_at ASC',
+            [session_id]
+        );
+
+        const conversation = history.rows.map((row) => row.answer).join('\n');
+
+        const raw = await runPythonScript('interview_engine.py', [
+            'continue',
+            session.rows[0].bullet_point,
+            conversation
+        ]);
+        const result = parseJsonFromModelOutput(raw);
+
+        if (result.is_complete && result.improved_bullet) {
+            await pool.query(
+                'UPDATE interview_sessions SET improved_bullet = $1, completed = true WHERE session_id = $2',
+                [result.improved_bullet, session_id]
+            );
+        }
+
+        return res.json(result);
+    } catch (err) {
+        console.error('Interview continue error:', err);
+        return res.status(500).json({ error: 'Failed to continue interview.' });
+    }
 });
 
 // --- COVER LETTER ROUTE ---
